@@ -159,6 +159,34 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--primary-light); }
+
+  /* Clubs */
+  .clubs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .club-card { background: #fff; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+  .club-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(255,107,53,0.18); }
+  .club-card-header { padding: 14px 16px 10px; display: flex; align-items: flex-start; gap: 12px; }
+  .club-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .club-header-info { flex: 1; min-width: 0; }
+  .club-name { font-size: 15px; font-weight: 800; color: var(--text); line-height: 1.3; }
+  .club-name-en { font-size: 11px; color: var(--text3); margin-top: 1px; font-style: italic; }
+  .club-tier { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 700; margin-top: 4px; }
+  .tier-top { background: #FFF3CD; color: #856404; }
+  .tier-regional { background: #D1ECF1; color: #0C5460; }
+  .tier-local { background: #D4EDDA; color: #155724; }
+  .club-card-body { padding: 0 16px 12px; }
+  .club-meta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  .club-meta-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text2); }
+  .club-meta-item span:first-child { font-size: 13px; }
+  .club-desc { font-size: 12px; color: var(--text2); line-height: 1.7; margin-bottom: 10px; }
+  .club-performers { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
+  .club-performer-tag { padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; background: var(--bg3); color: var(--primary); }
+  .club-status { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 10px; }
+  .status-active { background: #D4EDDA; color: #155724; }
+  .status-inactive { background: #F8D7DA; color: #721C24; }
+  .club-city-group { margin-bottom: 28px; }
+  .club-city-label { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .club-city-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  @media (max-width: 600px) { .clubs-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -179,6 +207,7 @@
   <div class="tab" onclick="switchTab('shows')">🎬 节目库</div>
   <div class="tab" onclick="switchTab('performers')">🎤 演员档案</div>
   <div class="tab" onclick="switchTab('bits')">💬 段子库</div>
+  <div class="tab" onclick="switchTab('clubs')">🏠 俱乐部</div>
 </div>
 
 <div class="content">
@@ -231,6 +260,21 @@
       <button class="filter-btn active" onclick="filterBits('all', this)">全部</button>
     </div>
     <div class="bits-grid" id="bits-grid"></div>
+  </div>
+
+  <!-- 俱乐部 Tab -->
+  <div id="tab-clubs" class="section">
+    <div class="section-title">脱口秀俱乐部</div>
+    <div class="filter-bar" id="clubs-filter">
+      <button class="filter-btn active" onclick="filterClubs('all', this)">全部</button>
+      <button class="filter-btn" onclick="filterClubs('top', this)">头部厂牌</button>
+      <button class="filter-btn" onclick="filterClubs('北京', this)">北京</button>
+      <button class="filter-btn" onclick="filterClubs('上海', this)">上海</button>
+      <button class="filter-btn" onclick="filterClubs('深圳', this)">深圳</button>
+      <button class="filter-btn" onclick="filterClubs('成都', this)">成都</button>
+      <button class="filter-btn" onclick="filterClubs('其他', this)">其他城市</button>
+    </div>
+    <div id="clubs-container"></div>
   </div>
 
 </div>
@@ -1423,6 +1467,313 @@ function searchBits(val) {
 }
 
 // ============================================================
+// 俱乐部数据
+// ============================================================
+
+const CLUBS = [
+  // ── 头部厂牌 ──
+  {
+    id: 'xiaoguo', name: '笑果文化', nameEn: 'XiaoGuo Culture',
+    city: '上海', founded: 2014, tier: 'top',
+    icon: '😂', iconBg: 'linear-gradient(135deg,#FF6B35,#E63900)',
+    founder: '叶烽 · 贺晓曦 · 李诞',
+    performers: ['李诞','王建国','庞博','杨笠','呼兰','徐志胜','何广智','张博洋','宋木子','童漠男'],
+    desc: '中国脱口秀行业绝对龙头，2014年创立于上海。凭借《吐槽大会》《脱口秀大会》两档爆款综艺完成快速造星，完成8轮融资，估值超40亿元。旗下线下品牌"噗哧脱口秀"覆盖全国多城市。',
+    active: true,
+    weibo: 'https://weibo.com/xiaoguo',
+  },
+  {
+    id: 'danliren', name: '单立人喜剧', nameEn: 'Danlirencomedy',
+    city: '北京', founded: 2017, tier: 'top',
+    icon: '🎭', iconBg: 'linear-gradient(135deg,#1565C0,#0D47A1)',
+    founder: '石介甫（石老板）',
+    performers: ['周奇墨','徐志胜','颜怡颜悦','邱瑞','宋万博','付航','赵晓卉'],
+    desc: '与笑果文化并称"南笑果北单立人"，2017年成立于北京。专注单口喜剧、即兴喜剧、漫才、Sketch多元形式，以线下演出为核心。旗下播客《谐星聊天会》广受好评，参与编剧电影《年会不能停》。',
+    active: true,
+    weibo: 'https://weibo.com/danliren',
+  },
+  {
+    id: 'hardcore', name: '硬核喜剧', nameEn: 'Hardcore Comedy',
+    city: '北京', founded: 2018, tier: 'top',
+    icon: '🔥', iconBg: 'linear-gradient(135deg,#B71C1C,#7F0000)',
+    founder: '冯子龙',
+    performers: ['多名签约演员'],
+    desc: '全国连锁喜剧厂牌，在北京、上海、广州、深圳、杭州五城均有固定剧场，每周举办30+场演出，年演出超1500场。涵盖脱口秀、漫才、Sketch等多种形式。',
+    active: true,
+  },
+  // ── 北京 ──
+  {
+    id: 'beituoclub', name: '北京脱口秀俱乐部', nameEn: 'Beijing Stand-up Comedy Club',
+    city: '北京', founded: 2010, tier: 'regional',
+    icon: '🏛️', iconBg: 'linear-gradient(135deg,#4527A0,#311B92)',
+    founder: '慕德权（西江月）',
+    performers: ['池子','杨笠','杨蒙恩','意辰'],
+    desc: '北京最早成立的纯美式中文Stand-up Comedy俱乐部，也是国内最早的脱口秀俱乐部之一。坚持"结合中国文化的汉语特色脱口秀"路线，举办开放麦500+场，培育了大批知名演员。',
+    active: true,
+  },
+  {
+    id: 'bjcomedy', name: '北京喜剧中心', nameEn: 'Beijing Comedy Center',
+    city: '北京', founded: 2013, tier: 'regional',
+    icon: '🎪', iconBg: 'linear-gradient(135deg,#00695C,#004D40)',
+    founder: '宋启瑜',
+    performers: ['宋启瑜'],
+    desc: '国内首家脱口秀演出与培训机构，每年举办约30期喜剧培训，累计培训上千名学员。同时承接企业年会、商业演出，为世界500强企业提供服务。',
+    active: true,
+  },
+  {
+    id: 'xifan', name: '喜番喜剧', nameEn: 'Xifan Comedy',
+    city: '北京', founded: 2020, tier: 'regional',
+    icon: '🌟', iconBg: 'linear-gradient(135deg,#F57F17,#E65100)',
+    founder: '陈飞宇',
+    performers: ['漆漆','继业','小鱼'],
+    desc: '近年北京崛起最快的中型厂牌之一，旗下演员漆漆、继业、小鱼登上《喜剧之王单口季》《脱口秀和Ta的朋友们》后人气大涨，2025年巡演季票房亮眼。',
+    active: true,
+  },
+  // ── 上海 ──
+  {
+    id: 'comedyunion', name: '喜剧联盒国', nameEn: 'Comedy Union',
+    city: '上海', founded: 2015, tier: 'regional',
+    icon: '🌍', iconBg: 'linear-gradient(135deg,#0277BD,#01579B)',
+    founder: 'Storm Xu',
+    performers: ['多名中英文双语演员'],
+    desc: '曾被CNN评为"亚洲最好的Comedy Club"，荣获首届上海国际喜剧节杰出表现奖。支持中英文双语演出，是上海最具国际化色彩的脱口秀俱乐部，代表上海参加香港国际喜剧节。',
+    active: true,
+  },
+  {
+    id: 'maotouying', name: '猫头鹰喜剧', nameEn: 'Owl Comedy',
+    city: '上海', founded: 2020, tier: 'regional',
+    icon: '🦉', iconBg: 'linear-gradient(135deg,#4E342E,#3E2723)',
+    founder: '史炎',
+    performers: ['史炎'],
+    desc: '由脱口秀OG级人物史炎创立，Slogan"可与人言皆喜剧"。史炎有二十年喜剧实践经验，曾参与《今晚80后脱口秀》《吐槽大会》，著有《不开玩笑》，同时运营同名播客。',
+    active: true,
+  },
+  // ── 深圳 ──
+  {
+    id: 'takeout', name: '外卖脱口秀', nameEn: 'TakeOut Comedy Shenzhen',
+    city: '深圳', founded: 2009, tier: 'regional',
+    icon: '🛵', iconBg: 'linear-gradient(135deg,#2E7D32,#1B5E20)',
+    founder: '邹澍（Joshua）',
+    performers: ['程璐','梁海源','思文'],
+    desc: '中国大陆第一家脱口秀俱乐部，2009年创立于深圳，历史意义极为重大。"开放麦"这一中文译名即由邹澍首创。程璐、梁海源、思文等后来成名的演员均在此起步。',
+    active: true,
+  },
+  {
+    id: 'sanjiazhu', name: '三脚猪喜剧', nameEn: 'Three-Legged Pig Comedy',
+    city: '深圳', founded: 2022, tier: 'local',
+    icon: '🐷', iconBg: 'linear-gradient(135deg,#AD1457,#880E4F)',
+    founder: '戴为',
+    performers: ['戴为'],
+    desc: '立足大湾区的喜剧厂牌，名字取自"珠三角"谐音，寓意"即便不完美，也保持乐观向前"。在深圳福田、南山两处设有固定场馆，入选2025广东省演艺新空间展演季。',
+    active: true,
+  },
+  {
+    id: 'bloom', name: '开花BLOOM脱口秀', nameEn: 'Bloom Comedy',
+    city: '深圳', founded: 2024, tier: 'local',
+    icon: '🌸', iconBg: 'linear-gradient(135deg,#C2185B,#880E4F)',
+    founder: '小块 · 徐志胜',
+    performers: ['徐志胜','小块'],
+    desc: '由知名演员徐志胜与小块合伙创立，选址深圳南山区华侨城O·POWER专业剧场。创业初期月均亏损12万元，最高单月亏损60万元，小块甚至卖房填补亏空，成为行业"理想主义创业"典型案例。',
+    active: true,
+  },
+  {
+    id: 'wanwan', name: '玩儿丸喜剧', nameEn: 'Wanwan Comedy',
+    city: '深圳', founded: 2019, tier: 'local',
+    icon: '🎱', iconBg: 'linear-gradient(135deg,#00838F,#006064)',
+    founder: '老麦',
+    performers: ['老麦及旗下演员'],
+    desc: '深圳本土知名厂牌，在宝安壹方城设有可容纳200人的固定剧场，成为年轻人打卡地。名字来源于创始人与朋友在一家韩式丸子店商议后的灵感。',
+    active: true,
+  },
+  // ── 成都 ──
+  {
+    id: 'guozai', name: '过载喜剧', nameEn: 'Overload Comedy',
+    city: '成都', founded: 2015, tier: 'regional',
+    icon: '⚡', iconBg: 'linear-gradient(135deg,#F9A825,#F57F17)',
+    founder: '方小天',
+    performers: ['土豆','吕严'],
+    desc: '成都最老牌的脱口秀厂牌，2015年创立。旗下成熟演员约15人，新人演员60余人，每周二、三、四举办开放麦。曾举办国内最大规模的喜剧节，是西南地区喜剧生态的重要基石。',
+    active: true,
+  },
+  {
+    id: 'houyang', name: '后仰喜剧', nameEn: 'Houyang Comedy',
+    city: '成都', founded: 2019, tier: 'local',
+    icon: '🎯', iconBg: 'linear-gradient(135deg,#6A1B9A,#4A148C)',
+    founder: '阿豪',
+    performers: ['真勇','艾克'],
+    desc: '成都票房成绩"全国前五水平"的本土厂牌，演出辐射绵阳、德阳、宜宾等周边城市，是西南地区影响力较强的独立喜剧厂牌。',
+    active: true,
+  },
+  {
+    id: 'jiemoduo', name: '芥末喜剧', nameEn: 'Mustard Comedy',
+    city: '成都', founded: 2018, tier: 'local',
+    icon: '🌿', iconBg: 'linear-gradient(135deg,#558B2F,#33691E)',
+    founder: '王大进',
+    performers: ['王大进'],
+    desc: '成都知名脱口秀俱乐部，西部地区少有的可驾驭中英文脱口秀商演的厂牌。王大进曾夺得单立人全国原创喜剧大赛小组第一、决赛全国十二强，是西南地区代表性演员。',
+    active: true,
+  },
+  // ── 其他城市 ──
+  {
+    id: 'kaifan', name: '开饭喜剧', nameEn: 'Kaifan Comedy',
+    city: '武汉', founded: 2017, tier: 'regional',
+    icon: '🍜', iconBg: 'linear-gradient(135deg,#D84315,#BF360C)',
+    founder: '叨叨（马光远）',
+    performers: ['叨叨','及旗下20余位签约演员'],
+    desc: '武汉第一家以单口喜剧为主体的脱口秀俱乐部，2017年底在街道口咖啡馆开启首次开放麦。8年来累计举办3000余场演出，服务观众超100万人，开放麦票价仅9.9元。',
+    active: true,
+  },
+  {
+    id: 'xiaoma', name: '笑嘛喜剧', nameEn: 'Xiaoma Comedy',
+    city: '长沙', founded: 2018, tier: 'regional',
+    icon: '😄', iconBg: 'linear-gradient(135deg,#E53935,#B71C1C)',
+    founder: '伟大爷（李伟胜）',
+    performers: ['伟大爷','哈哈曹','漫才兄弟','吕博伟'],
+    desc: '湖南省首个脱口秀俱乐部，剧场400余座位，每周五至周日商演9场，几乎场场满座。是《脱口秀大会》《脱口秀和Ta的朋友们》湖南省唯一合作剧场，徐志胜、周奇墨等均曾来此演出。',
+    active: true,
+  },
+  {
+    id: 'tangsuan', name: '唐蒜铺子', nameEn: 'Tang Suan Comedy',
+    city: '西安', founded: 2015, tier: 'regional',
+    icon: '🧄', iconBg: 'linear-gradient(135deg,#5D4037,#3E2723)',
+    founder: '啸雷（张啸雷）',
+    performers: ['啸雷','杨乐'],
+    desc: '西北地区首个以脱口秀为主的喜剧团队，以陕西方言脱口秀为核心特色，融入本地文化元素。2021年起在抖音以陕西文化为主题的街采视频走红，成为西安城市文化名片，2024年举办九周年演出季。',
+    active: true,
+  },
+  {
+    id: 'huishuoxiao', name: '会说笑喜剧', nameEn: 'Huishuoxiao Comedy',
+    city: '杭州', founded: 2019, tier: 'local',
+    icon: '🌊', iconBg: 'linear-gradient(135deg,#0288D1,#01579B)',
+    founder: '李梦杰',
+    performers: ['李梦杰'],
+    desc: '杭州本土知名脱口秀俱乐部，主理人李梦杰曾任《今晚80后脱口秀》编剧，参演《脱口秀和Ta的朋友们》。致力于打造"美国俱乐部式"的单口喜剧空间，与单立人、开心麻花等均有合作。',
+    active: true,
+  },
+  {
+    id: 'songguo', name: '松果喜剧', nameEn: 'Songguo Comedy',
+    city: '杭州', founded: 2021, tier: 'local',
+    icon: '🌰', iconBg: 'linear-gradient(135deg,#795548,#4E342E)',
+    founder: '小七',
+    performers: ['小七及旗下演员'],
+    desc: '杭州活跃的本土脱口秀厂牌，演员团队扎根城市烟火，以"杭味"段子直击日常槽点，每场30%内容根据近期热点实时更新。杭州春节期间唯一不打烊的脱口秀空间，除夕夜也有演出。',
+    active: true,
+  },
+  {
+    id: 'buzhi', name: '不止喜剧', nameEn: 'Buzhi Comedy',
+    city: '昆明', founded: 2020, tier: 'local',
+    icon: '☁️', iconBg: 'linear-gradient(135deg,#00897B,#004D40)',
+    founder: '吴杨',
+    performers: ['吴杨及旗下演员'],
+    desc: '昆明乃至云南第一个专业室内喜剧剧场，以女性表达为常态特色。2022年与云南艺术剧院合作，打造"云南艺术剧院·不止喜剧空间"，每周演出不少于5场，曾引进徐志胜、邱瑞等全国知名演员。',
+    active: true,
+  },
+  {
+    id: 'suodao', name: '索道喜剧', nameEn: 'Suodao Comedy',
+    city: '重庆', founded: 2019, tier: 'local',
+    icon: '🚡', iconBg: 'linear-gradient(135deg,#1565C0,#0D47A1)',
+    founder: '褚大成',
+    performers: ['褚大成及22位常驻演员'],
+    desc: '重庆知名喜剧厂牌，以单口喜剧为主要表演方式，5年来服务观众达4万人，足迹覆盖北京、武汉、成都等地。名字取自重庆标志性的索道交通，充满山城特色。',
+    active: true,
+  },
+];
+
+// ============================================================
+// 俱乐部渲染
+// ============================================================
+
+let currentClubFilter = 'all';
+
+function renderClubs(filter) {
+  filter = filter || currentClubFilter;
+  const container = document.getElementById('clubs-container');
+
+  let filtered = CLUBS;
+  if (filter === 'top') {
+    filtered = CLUBS.filter(c => c.tier === 'top');
+  } else if (filter === '其他') {
+    const mainCities = ['北京','上海','深圳','成都'];
+    filtered = CLUBS.filter(c => !mainCities.includes(c.city) && c.tier !== 'top');
+  } else if (filter !== 'all') {
+    filtered = CLUBS.filter(c => c.city === filter);
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<p style="color:var(--text3);padding:20px 0;">暂无数据</p>';
+    return;
+  }
+
+  // Group by city (or "头部厂牌" for top tier)
+  const groups = {};
+  filtered.forEach(club => {
+    const key = club.tier === 'top' ? '🏆 头部厂牌（全国影响力）' : `📍 ${club.city}`;
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(club);
+  });
+
+  // Sort: top first, then by city
+  const sortedKeys = Object.keys(groups).sort((a, b) => {
+    if (a.includes('头部')) return -1;
+    if (b.includes('头部')) return 1;
+    return a.localeCompare(b);
+  });
+
+  container.innerHTML = sortedKeys.map(key => `
+    <div class="club-city-group">
+      <div class="club-city-label">${key}</div>
+      <div class="clubs-grid">
+        ${groups[key].map(club => renderClubCard(club)).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderClubCard(club) {
+  const tierLabel = { top: '头部厂牌', regional: '区域知名', local: '本地厂牌' }[club.tier];
+  const tierClass = { top: 'tier-top', regional: 'tier-regional', local: 'tier-local' }[club.tier];
+  const performers = club.performers.slice(0, 6).map(p =>
+    `<span class="club-performer-tag">${p}</span>`
+  ).join('');
+  const moreCount = club.performers.length > 6 ? `<span class="club-performer-tag">+${club.performers.length - 6}</span>` : '';
+
+  return `
+    <div class="club-card">
+      <div class="club-card-header">
+        <div class="club-icon" style="background:${club.iconBg}">${club.icon}</div>
+        <div class="club-header-info">
+          <div class="club-name">${club.name}</div>
+          ${club.nameEn ? `<div class="club-name-en">${club.nameEn}</div>` : ''}
+          <span class="club-tier ${tierClass}">${tierLabel}</span>
+        </div>
+      </div>
+      <div class="club-card-body">
+        <div class="club-meta-row">
+          <div class="club-meta-item"><span>📍</span><span>${club.city}</span></div>
+          <div class="club-meta-item"><span>📅</span><span>${club.founded}年创立</span></div>
+          <div class="club-meta-item"><span>👤</span><span>${club.founder}</span></div>
+        </div>
+        <div class="club-desc">${club.desc}</div>
+        ${club.performers.length > 0 ? `
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;font-weight:600;">知名演员</div>
+        <div class="club-performers">${performers}${moreCount}</div>
+        ` : ''}
+        <span class="club-status ${club.active ? 'status-active' : 'status-inactive'}">
+          ${club.active ? '● 运营中' : '● 已停止'}
+        </span>
+      </div>
+    </div>
+  `;
+}
+
+function filterClubs(filter, btn) {
+  document.querySelectorAll('#clubs-filter .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentClubFilter = filter;
+  renderClubs(filter);
+}
+
+// ============================================================
 // 初始化
 // ============================================================
 
@@ -1438,6 +1789,7 @@ function updateStats() {
   renderPerformers();
   buildBitsFilter();
   renderBits();
+  renderClubs();
   updateStats();
 })();
 </script>
