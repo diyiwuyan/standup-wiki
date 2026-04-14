@@ -1,0 +1,1447 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>中国脱口秀知识库</title>
+<style>
+  :root {
+    --primary: #FF6B35;
+    --primary-light: #FF8C5A;
+    --accent: #FFD166;
+    --bg: #FFF8F3;
+    --bg2: #FFFFFF;
+    --bg3: #FFF0E6;
+    --text: #1A1A2E;
+    --text2: #4A4A6A;
+    --text3: #8888AA;
+    --border: #F0D8C8;
+    --shadow: 0 2px 12px rgba(255,107,53,0.10);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #FF6B35 0%, #FF4500 60%, #E63900 100%); color: #fff; padding: 28px 24px 20px; text-align: center; position: relative; overflow: hidden; }
+  .header::before { content: '🎤'; position: absolute; font-size: 120px; opacity: 0.08; right: -20px; top: -20px; }
+  .header h1 { font-size: 28px; font-weight: 800; letter-spacing: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+  .header p { font-size: 13px; opacity: 0.85; margin-top: 6px; }
+  .header-stats { display: flex; justify-content: center; gap: 24px; margin-top: 14px; }
+  .stat-item { text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 800; }
+  .stat-label { font-size: 11px; opacity: 0.75; }
+
+  /* Tabs */
+  .tabs { display: flex; background: #fff; border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .tab { flex: 1; padding: 14px 8px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text2); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; }
+  .tab:hover { color: var(--primary); background: var(--bg3); }
+  .tab.active { color: var(--primary); border-bottom-color: var(--primary); background: var(--bg3); }
+
+  /* Content */
+  .content { max-width: 1100px; margin: 0 auto; padding: 20px 16px; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Section Title */
+  .section-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .section-title::before { content: ''; display: inline-block; width: 4px; height: 20px; background: var(--primary); border-radius: 2px; }
+
+  /* Filter Bar */
+  .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .filter-btn { padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: #fff; color: var(--text2); font-size: 13px; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+  .filter-btn:hover, .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  /* Show Cards Grid */
+  .shows-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+  .show-card { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+  .show-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(255,107,53,0.18); }
+  .show-poster { width: 100%; aspect-ratio: 2/3; object-fit: cover; background: linear-gradient(135deg, #FF6B35, #FF4500); display: flex; align-items: center; justify-content: center; font-size: 40px; }
+  .show-poster img { width: 100%; height: 100%; object-fit: cover; }
+  .show-poster-placeholder { width: 100%; aspect-ratio: 2/3; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+  .show-info { padding: 10px 12px; }
+  .show-name { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.3; }
+  .show-meta { font-size: 12px; color: var(--text3); margin-top: 4px; }
+  .show-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .tag { padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .tag-platform { background: #FFF0E6; color: var(--primary); }
+  .tag-year { background: #E8F4FD; color: #2196F3; }
+  .tag-score { background: #FFF8E1; color: #F57C00; }
+  .show-links { padding: 8px 12px; border-top: 1px solid var(--border); display: flex; gap: 6px; }
+  .show-link { font-size: 11px; padding: 3px 8px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: opacity 0.2s; }
+  .show-link:hover { opacity: 0.8; }
+  .link-douban { background: #F0F7F0; color: #2E7D32; }
+  .link-bilibili { background: #E8F0FE; color: #1565C0; }
+  .link-tencent { background: #E8F4FD; color: #0066CC; }
+  .link-iqiyi { background: #FFF0F0; color: #CC0000; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--primary), var(--accent)); border-radius: 1px; }
+  .timeline-year { font-size: 20px; font-weight: 800; color: var(--primary); margin: 20px 0 12px -24px; padding-left: 24px; }
+  .timeline-item { position: relative; margin-bottom: 12px; }
+  .timeline-item::before { content: ''; position: absolute; left: -20px; top: 14px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); border: 2px solid #fff; box-shadow: 0 0 0 2px var(--primary); }
+  .timeline-card { background: #fff; border-radius: var(--radius-sm); padding: 12px 14px; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; gap: 12px; align-items: flex-start; }
+  .timeline-poster { width: 50px; height: 70px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: var(--bg3); }
+  .timeline-poster-placeholder { width: 50px; height: 70px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .timeline-body { flex: 1; min-width: 0; }
+  .timeline-title { font-size: 15px; font-weight: 700; }
+  .timeline-desc { font-size: 12px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
+  .timeline-links { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+
+  /* Performers */
+  .performers-section { margin-bottom: 28px; }
+  .performers-label { font-size: 15px; font-weight: 700; color: var(--text2); margin-bottom: 12px; padding: 6px 12px; background: var(--bg3); border-radius: var(--radius-sm); display: inline-block; }
+  .performers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .performer-card { background: #fff; border-radius: var(--radius); padding: 14px 12px; border: 1px solid var(--border); box-shadow: var(--shadow); cursor: pointer; transition: all 0.2s; text-align: center; }
+  .performer-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,53,0.15); border-color: var(--primary-light); }
+  .performer-avatar { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #fff; }
+  .performer-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .performer-title { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .performer-shows { font-size: 11px; color: var(--primary); margin-top: 4px; font-weight: 600; }
+
+  /* Performer Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #fff; border-radius: var(--radius); max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; gap: 16px; align-items: center; position: sticky; top: 0; background: #fff; z-index: 1; }
+  .modal-avatar { width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .modal-name { font-size: 20px; font-weight: 800; }
+  .modal-meta { font-size: 13px; color: var(--text2); margin-top: 4px; }
+  .modal-close { margin-left: auto; width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--bg3); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-body { padding: 16px 20px; }
+  .modal-section-title { font-size: 14px; font-weight: 700; color: var(--text2); margin: 14px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+  .shows-list { display: flex; gap: 6px; flex-wrap: wrap; }
+  .show-badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; background: var(--bg3); color: var(--primary); }
+  .bits-list { display: flex; flex-direction: column; gap: 8px; }
+  .bit-item { background: var(--bg); border-radius: var(--radius-sm); padding: 10px 12px; border-left: 3px solid var(--primary); }
+  .bit-title { font-size: 13px; font-weight: 700; color: var(--text); }
+  .bit-desc { font-size: 12px; color: var(--text2); margin-top: 3px; line-height: 1.5; }
+  .bit-links { display: flex; gap: 6px; margin-top: 6px; }
+  .bit-link { font-size: 11px; padding: 2px 8px; border-radius: 6px; text-decoration: none; font-weight: 600; }
+  .link-douyin { background: #FCE4EC; color: #C2185B; }
+  .link-weibo { background: #FFF3E0; color: #E65100; }
+
+  /* Bits Section */
+  .bits-filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .bits-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .bit-card { background: #fff; border-radius: var(--radius); padding: 14px; border: 1px solid var(--border); box-shadow: var(--shadow); transition: all 0.2s; }
+  .bit-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,53,0.12); }
+  .bit-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .bit-performer-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .bit-performer-name { font-size: 13px; font-weight: 700; }
+  .bit-show-name { font-size: 11px; color: var(--text3); }
+  .bit-card-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .bit-card-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+  .bit-card-links { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+
+  /* About */
+  .about-card { background: #fff; border-radius: var(--radius); padding: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); margin-bottom: 16px; }
+  .about-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--primary); }
+  .about-card p { font-size: 13px; color: var(--text2); line-height: 1.8; }
+
+  /* Search */
+  .search-box { width: 100%; padding: 10px 16px; border-radius: 24px; border: 2px solid var(--border); font-size: 14px; outline: none; transition: border-color 0.2s; margin-bottom: 16px; background: #fff; }
+  .search-box:focus { border-color: var(--primary); }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .shows-grid { grid-template-columns: repeat(2, 1fr); }
+    .performers-grid { grid-template-columns: repeat(3, 1fr); }
+    .bits-grid { grid-template-columns: 1fr; }
+    .header h1 { font-size: 22px; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--primary-light); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎤 中国脱口秀知识库</h1>
+  <p>吐槽大会 · 脱口秀大会 · 喜剧之王单口季 · 脱他 · 主咖和Ta的朋友们</p>
+  <div class="header-stats">
+    <div class="stat-item"><div class="stat-num" id="stat-shows">15</div><div class="stat-label">节目季</div></div>
+    <div class="stat-item"><div class="stat-num" id="stat-performers">45</div><div class="stat-label">演员</div></div>
+    <div class="stat-item"><div class="stat-num" id="stat-bits">120+</div><div class="stat-label">经典段子</div></div>
+    <div class="stat-item"><div class="stat-num">2017—2026</div><div class="stat-label">年份跨度</div></div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('timeline')">📅 时间线</div>
+  <div class="tab" onclick="switchTab('shows')">🎬 节目库</div>
+  <div class="tab" onclick="switchTab('performers')">🎤 演员档案</div>
+  <div class="tab" onclick="switchTab('bits')">💬 段子库</div>
+</div>
+
+<div class="content">
+
+  <!-- 时间线 Tab -->
+  <div id="tab-timeline" class="section active">
+    <div class="section-title">节目时间线</div>
+    <div class="filter-bar" id="timeline-filter">
+      <button class="filter-btn active" onclick="filterTimeline('all', this)">全部</button>
+      <button class="filter-btn" onclick="filterTimeline('吐槽大会', this)">吐槽大会</button>
+      <button class="filter-btn" onclick="filterTimeline('脱口秀大会', this)">脱口秀大会</button>
+      <button class="filter-btn" onclick="filterTimeline('喜剧之王单口季', this)">喜剧之王单口季</button>
+      <button class="filter-btn" onclick="filterTimeline('脱他', this)">脱他</button>
+      <button class="filter-btn" onclick="filterTimeline('主咖', this)">主咖</button>
+    </div>
+    <div class="timeline" id="timeline-container"></div>
+  </div>
+
+  <!-- 节目库 Tab -->
+  <div id="tab-shows" class="section">
+    <div class="section-title">节目库</div>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterShows('all', this)">全部</button>
+      <button class="filter-btn" onclick="filterShows('吐槽大会', this)">吐槽大会</button>
+      <button class="filter-btn" onclick="filterShows('脱口秀大会', this)">脱口秀大会</button>
+      <button class="filter-btn" onclick="filterShows('喜剧之王单口季', this)">喜剧之王单口季</button>
+      <button class="filter-btn" onclick="filterShows('脱他', this)">脱他</button>
+      <button class="filter-btn" onclick="filterShows('主咖', this)">主咖</button>
+    </div>
+    <div class="shows-grid" id="shows-grid"></div>
+  </div>
+
+  <!-- 演员档案 Tab -->
+  <div id="tab-performers" class="section">
+    <div class="section-title">演员档案</div>
+    <input class="search-box" type="text" placeholder="🔍 搜索演员姓名..." oninput="searchPerformers(this.value)">
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterPerformers('all', this)">全部</button>
+      <button class="filter-btn" onclick="filterPerformers('pro', this)">专业演员</button>
+      <button class="filter-btn" onclick="filterPerformers('guest', this)">嘉宾</button>
+    </div>
+    <div id="performers-container"></div>
+  </div>
+
+  <!-- 段子库 Tab -->
+  <div id="tab-bits" class="section">
+    <div class="section-title">经典段子库</div>
+    <input class="search-box" type="text" placeholder="🔍 搜索段子、演员..." oninput="searchBits(this.value)">
+    <div class="filter-bar" id="bits-filter">
+      <button class="filter-btn active" onclick="filterBits('all', this)">全部</button>
+    </div>
+    <div class="bits-grid" id="bits-grid"></div>
+  </div>
+
+</div>
+
+<!-- 演员详情弹窗 -->
+<div class="modal-overlay" id="performer-modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+// ============================================================
+// 数据层
+// ============================================================
+
+const SHOWS = [
+  // 吐槽大会
+  {
+    id: 's1', series: '吐槽大会', season: 1, name: '吐槽大会 第一季', year: 2017,
+    platform: '腾讯视频', score: 7.5, episodes: 12,
+    poster: 'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2506825662.webp',
+    posterBg: 'linear-gradient(135deg,#E53935,#B71C1C)',
+    desc: '首季由李诞、池子主持，开创国内吐槽综艺先河，嘉宾包括薛之谦、大张伟等。',
+    douban: 'https://movie.douban.com/subject/26966580/',
+    tencent: 'https://v.qq.com/x/search/?q=%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%B8%80%E5%AD%A3',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%B8%80%E5%AD%A3',
+  },
+  {
+    id: 's2', series: '吐槽大会', season: 2, name: '吐槽大会 第二季', year: 2018,
+    platform: '腾讯视频', score: 7.3, episodes: 12,
+    poster: 'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2507364239.webp',
+    posterBg: 'linear-gradient(135deg,#E53935,#B71C1C)',
+    desc: '第二季嘉宾阵容更强大，王思聪、范冰冰等明星参与，话题度极高。',
+    douban: 'https://movie.douban.com/subject/27200524/',
+    tencent: 'https://v.qq.com/x/search/?q=%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%BA%8C%E5%AD%A3',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%BA%8C%E5%AD%A3',
+  },
+  {
+    id: 's3', series: '吐槽大会', season: 3, name: '吐槽大会 第三季', year: 2019,
+    platform: '腾讯视频', score: 7.2, episodes: 12,
+    poster: 'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2538347989.webp',
+    posterBg: 'linear-gradient(135deg,#E53935,#B71C1C)',
+    desc: '第三季引入更多脱口秀演员，张雨绮、吴昕等明星参与，笑点密集。',
+    douban: 'https://movie.douban.com/subject/30282688/',
+    tencent: 'https://v.qq.com/x/search/?q=%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%B8%89%E5%AD%A3',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%B8%89%E5%AD%A3',
+  },
+  {
+    id: 's4', series: '吐槽大会', season: 4, name: '吐槽大会 第四季', year: 2020,
+    platform: '腾讯视频', score: 7.0, episodes: 12,
+    poster: 'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2572914273.webp',
+    posterBg: 'linear-gradient(135deg,#E53935,#B71C1C)',
+    desc: '第四季疫情期间播出，李雪琴首次亮相，成为最大黑马。',
+    douban: 'https://movie.douban.com/subject/34820929/',
+    tencent: 'https://v.qq.com/x/search/?q=%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E5%9B%9B%E5%AD%A3',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E5%9B%9B%E5%AD%A3',
+  },
+  {
+    id: 's5', series: '吐槽大会', season: 5, name: '吐槽大会 第五季', year: 2021,
+    platform: '腾讯视频', score: 6.8, episodes: 12,
+    poster: 'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2631577836.webp',
+    posterBg: 'linear-gradient(135deg,#E53935,#B71C1C)',
+    desc: '第五季嘉宾涵盖体育、娱乐多圈层，杨迪、徐志胜等表现亮眼。',
+    douban: 'https://movie.douban.com/subject/35310940/',
+    tencent: 'https://v.qq.com/x/search/?q=%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%BA%94%E5%AD%A3',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%BA%94%E5%AD%A3',
+  },
+  // 脱口秀大会
+  {
+    id: 't1', series: '脱口秀大会', season: 1, name: '脱口秀大会 第一季', year: 2017,
+    platform: '腾讯视频', score: 7.8, episodes: 10,
+    poster: 'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2495830451.webp',
+    posterBg: 'linear-gradient(135deg,#1565C0,#0D47A1)',
+    desc: '国内首档脱口秀竞演节目，发掘了大量优秀脱口秀演员，开创竞演模式。',
+    douban: 'https://movie.douban.com/subject/27073291/',
+    tencent: 'https://v.qq.com/x/search/?q=%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%B8%80%E5%AD%A3',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%B8%80%E5%AD%A3',
+  },
+  {
+    id: 't2', series: '脱口秀大会', season: 2, name: '脱口秀大会 第二季', year: 2019,
+    platform: '腾讯视频', score: 8.0, episodes: 12,
+    poster: 'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2562665948.webp',
+    posterBg: 'linear-gradient(135deg,#1565C0,#0D47A1)',
+    desc: '第二季口碑大爆，王勉、杨笠、颜怡颜悦等新人崭露头角，豆瓣8.0。',
+    douban: 'https://movie.douban.com/subject/30437529/',
+    tencent: 'https://v.qq.com/x/search/?q=%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%BA%8C%E5%AD%A3',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%BA%8C%E5%AD%A3',
+  },
+  {
+    id: 't3', series: '脱口秀大会', season: 3, name: '脱口秀大会 第三季', year: 2020,
+    platform: '腾讯视频', score: 8.2, episodes: 12,
+    poster: 'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2614883159.webp',
+    posterBg: 'linear-gradient(135deg,#1565C0,#0D47A1)',
+    desc: '第三季是公认巅峰，张博洋、徐志胜、何广智等大放异彩，豆瓣8.2。',
+    douban: 'https://movie.douban.com/subject/34963356/',
+    tencent: 'https://v.qq.com/x/search/?q=%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%B8%89%E5%AD%A3',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%B8%89%E5%AD%A3',
+  },
+  {
+    id: 't4', series: '脱口秀大会', season: 4, name: '脱口秀大会 第四季', year: 2021,
+    platform: '腾讯视频', score: 7.9, episodes: 12,
+    poster: 'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2675827902.webp',
+    posterBg: 'linear-gradient(135deg,#1565C0,#0D47A1)',
+    desc: '第四季周奇墨夺冠，赵晓卉、鸟鸟等女性演员表现突出，豆瓣7.9。',
+    douban: 'https://movie.douban.com/subject/35419945/',
+    tencent: 'https://v.qq.com/x/search/?q=%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E5%9B%9B%E5%AD%A3',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E5%9B%9B%E5%AD%A3',
+  },
+  {
+    id: 't5', series: '脱口秀大会', season: 5, name: '脱口秀大会 第五季', year: 2022,
+    platform: '腾讯视频', score: 7.5, episodes: 12,
+    poster: 'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2879037403.webp',
+    posterBg: 'linear-gradient(135deg,#1565C0,#0D47A1)',
+    desc: '第五季引入更多新人，付航、孟川等崭露头角，豆瓣7.5。',
+    douban: 'https://movie.douban.com/subject/36093955/',
+    tencent: 'https://v.qq.com/x/search/?q=%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%BA%94%E5%AD%A3',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A+%E7%AC%AC%E4%BA%94%E5%AD%A3',
+  },
+  // 喜剧之王单口季
+  {
+    id: 'x1', series: '喜剧之王单口季', season: 1, name: '喜剧之王单口季 第一季', year: 2024,
+    platform: '爱奇艺', score: 8.1, episodes: 10,
+    poster: 'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2911851430.webp',
+    posterBg: 'linear-gradient(135deg,#6A1B9A,#4A148C)',
+    desc: '爱奇艺出品，付航夺冠，全程高能，付航"热爱"名场面引爆全网，豆瓣8.1。',
+    douban: 'https://movie.douban.com/subject/36644898/',
+    iqiyi: 'https://www.iqiyi.com/search.html#query=%E5%96%9C%E5%89%A7%E4%B9%8B%E7%8E%8B%E5%8D%95%E5%8F%A3%E5%AD%A3',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E5%96%9C%E5%89%A7%E4%B9%8B%E7%8E%8B%E5%8D%95%E5%8F%A3%E5%AD%A3',
+  },
+  {
+    id: 'x2', series: '喜剧之王单口季', season: 2, name: '喜剧之王单口季 第二季', year: 2025,
+    platform: '爱奇艺', score: 7.8, episodes: 10,
+    poster: 'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2923244491.webp',
+    posterBg: 'linear-gradient(135deg,#6A1B9A,#4A148C)',
+    desc: '爱奇艺出品，第二季延续高水准，新老演员同台竞技，豆瓣7.8。',
+    douban: 'https://movie.douban.com/subject/36956789/',
+    iqiyi: 'https://www.iqiyi.com/search.html#query=%E5%96%9C%E5%89%A7%E4%B9%8B%E7%8E%8B%E5%8D%95%E5%8F%A3%E5%AD%A3+%E7%AC%AC%E4%BA%8C%E5%AD%A3',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E5%96%9C%E5%89%A7%E4%B9%8B%E7%8E%8B%E5%8D%95%E5%8F%A3%E5%AD%A3+%E7%AC%AC%E4%BA%8C%E5%AD%A3',
+  },
+  // 脱他
+  {
+    id: 'tt1', series: '脱他', season: 1, name: '脱他 第一季', year: 2024,
+    platform: '腾讯视频', score: 7.6, episodes: 8,
+    poster: null,
+    posterBg: 'linear-gradient(135deg,#00897B,#004D40)',
+    posterEmoji: '🎭',
+    desc: '腾讯视频出品，以"脱口秀+他者视角"为核心，形式新颖，豆瓣7.6。',
+    douban: 'https://movie.douban.com/subject/36644899/',
+    tencent: 'https://v.qq.com/x/search/?q=%E8%84%B1%E4%BB%96',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E8%84%B1%E4%BB%96+%E8%84%B1%E5%8F%A3%E7%A7%80',
+  },
+  {
+    id: 'tt2', series: '脱他', season: 2, name: '脱他 第二季', year: 2025,
+    platform: '腾讯视频', score: null, episodes: null,
+    poster: null,
+    posterBg: 'linear-gradient(135deg,#00897B,#004D40)',
+    posterEmoji: '🎭',
+    desc: '腾讯视频出品，2025年播出，延续第一季风格，更多新面孔加入。',
+    douban: 'https://www.douban.com/search?q=%E8%84%B1%E4%BB%96+%E7%AC%AC%E4%BA%8C%E5%AD%A3',
+    tencent: 'https://v.qq.com/x/search/?q=%E8%84%B1%E4%BB%96+%E7%AC%AC%E4%BA%8C%E5%AD%A3',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E8%84%B1%E4%BB%96+%E7%AC%AC%E4%BA%8C%E5%AD%A3',
+  },
+  // 主咖和Ta的朋友们
+  {
+    id: 'zk1', series: '主咖', season: 1, name: '主咖和Ta的朋友们', year: 2026,
+    platform: '腾讯视频', score: 7.0, episodes: null,
+    poster: 'https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2929200419.webp',
+    posterBg: 'linear-gradient(135deg,#FF6B35,#E64A19)',
+    desc: '即吐槽大会S6，2026年全新升级，主咖坐镇，朋友们轮番吐槽，豆瓣7.0。',
+    douban: 'https://movie.douban.com/subject/36956790/',
+    tencent: 'https://v.qq.com/x/search/?q=%E4%B8%BB%E5%92%96%E5%92%8CTa%E7%9A%84%E6%9C%8B%E5%8F%8B%E4%BB%AC',
+    bilibili: 'https://search.bilibili.com/all?keyword=%E4%B8%BB%E5%92%96%E5%92%8CTa%E7%9A%84%E6%9C%8B%E5%8F%8B%E4%BB%AC',
+  },
+];
+
+// 演员颜色池
+const COLORS = [
+  '#FF6B35','#E53935','#8E24AA','#1565C0','#00897B',
+  '#F57C00','#2E7D32','#AD1457','#283593','#00695C',
+  '#6D4C41','#37474F','#558B2F','#4527A0','#0277BD',
+];
+function getColor(name) {
+  let h = 0; for (let c of name) h = (h * 31 + c.charCodeAt(0)) % COLORS.length;
+  return COLORS[h];
+}
+function getInitial(name) { return name[0]; }
+
+const PERFORMERS = [
+  // ===== 专业演员 =====
+  // 头像使用 weserv.nl 代理豆瓣图片，格式：https://img9.doubanio.com/icon/u{ID}-1.jpg
+  {
+    id: 'p1', name: '李诞', type: 'pro', title: '脱口秀教父 / 笑果文化创始人',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/d1762f1c0e062aa116b45f3cd52fc793.jpg',
+    shows: ['吐槽大会S1','吐槽大会S2','吐槽大会S3','吐槽大会S4','吐槽大会S5','脱口秀大会S1','脱口秀大会S2','脱口秀大会S3'],
+    douyin: 'https://www.douyin.com/search/%E6%9D%8E%E8%AF%9E+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '人间不值得', desc: '「人间不值得」成为年度金句，李诞用虚无主义包裹对生活的洞察，引发全网共鸣。', link: 'https://www.douyin.com/search/%E6%9D%8E%E8%AF%9E+%E4%BA%BA%E9%97%B4%E4%B8%8D%E5%80%BC%E5%BE%97' },
+      { title: '我不想努力了', desc: '「我不想努力了」系列，以反鸡汤姿态戳中无数打工人的心。', link: 'https://www.douyin.com/search/%E6%9D%8E%E8%AF%9E+%E4%B8%8D%E6%83%B3%E5%8A%AA%E5%8A%9B' },
+      { title: '吐槽薛之谦', desc: '首季吐槽薛之谦，金句频出，奠定吐槽大会风格基调。', link: 'https://www.douyin.com/search/%E6%9D%8E%E8%AF%9E+%E5%90%90%E6%A7%BD%E8%96%9B%E4%B9%8B%E8%B0%A6' },
+      { title: '关于婚姻', desc: '「结婚是为了让对方不那么孤独，但你们两个人加在一起，孤独感翻倍了。」', link: 'https://www.douyin.com/search/%E6%9D%8E%E8%AF%9E+%E5%A9%9A%E5%A7%BB' },
+      { title: '躺平哲学', desc: '「躺平不是失败，是对抗内卷的最后防线。」系列段子，引发社会讨论。', link: 'https://www.douyin.com/search/%E6%9D%8E%E8%AF%9E+%E8%BA%BA%E5%B9%B3' },
+    ]
+  },
+  {
+    id: 'p2', name: '池子', type: 'pro', title: '脱口秀演员 / 前笑果文化',
+    avatar: 'https://www.ofanjoy.com/UserFiles/PictureLibrary/460a6c63-f587-43fa-9885-fafe05569e5f.jpg',
+    shows: ['吐槽大会S1','吐槽大会S2','脱口秀大会S1','脱口秀大会S2'],
+    douyin: 'https://www.douyin.com/search/%E6%B1%A0%E5%AD%90+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '吐槽大张伟', desc: '「大张伟你就是个人形BGM」，吐槽大会经典名场面。', link: 'https://www.douyin.com/search/%E6%B1%A0%E5%AD%90+%E5%90%90%E6%A7%BD%E5%A4%A7%E5%BC%A0%E4%BC%9F' },
+      { title: '关于年轻人', desc: '「年轻人最大的问题是，既想躺平，又怕真的躺下去。」', link: 'https://www.douyin.com/search/%E6%B1%A0%E5%AD%90+%E8%84%B1%E5%8F%A3%E7%A7%80' },
+      { title: '脱口秀大会开场', desc: '脱口秀大会S2开场段子，以自嘲方式讲述北漂生活。', link: 'https://www.douyin.com/search/%E6%B1%A0%E5%AD%90+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p3', name: '王勉', type: 'pro', title: '脱口秀演员 / 吉他脱口秀 · S3冠军',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/d21ed27b992bb09a05f1f9b7cb92a80e.jpg',
+    shows: ['脱口秀大会S2','脱口秀大会S3','脱口秀大会S4'],
+    douyin: 'https://www.douyin.com/search/%E7%8E%8B%E5%8B%89+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '吉他脱口秀', desc: '将吉他弹唱与脱口秀结合，「我不是在唱歌，我是在说话，只是说话的时候有点好听。」', link: 'https://www.douyin.com/search/%E7%8E%8B%E5%8B%89+%E5%90%89%E4%BB%96' },
+      { title: '关于外卖员', desc: '以外卖员视角讲述城市生活，温情与笑点并存。', link: 'https://www.douyin.com/search/%E7%8E%8B%E5%8B%89+%E5%A4%96%E5%8D%96' },
+      { title: '脱口秀大会S3夺冠', desc: '第三季总决赛表演，感动全场，最终夺冠。', link: 'https://www.douyin.com/search/%E7%8E%8B%E5%8B%89+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A%E5%A4%BA%E5%86%A0' },
+      { title: '关于父亲', desc: '「我爸说，你弹吉他能当饭吃吗？我说，能，我现在就在吃饭。」', link: 'https://www.douyin.com/search/%E7%8E%8B%E5%8B%89+%E7%88%B6%E4%BA%B2' },
+    ]
+  },
+  {
+    id: 'p4', name: '杨笠', type: 'pro', title: '脱口秀演员 / 女性视角代表',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/48e073e17d390e9a64c051c62b3fce29.jpg',
+    shows: ['脱口秀大会S2','脱口秀大会S3','脱口秀大会S4','脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E6%9D%A8%E7%AC%A0+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '普信男', desc: '「他那么普通，却那么自信」，「普信男」成为年度网络热词，引发全网讨论。', link: 'https://www.douyin.com/search/%E6%9D%A8%E7%AC%A0+%E6%99%AE%E4%BF%A1%E7%94%B7' },
+      { title: '关于男女关系', desc: '「男人和女人最大的区别是，男人觉得自己很厉害，女人知道自己不够厉害。」', link: 'https://www.douyin.com/search/%E6%9D%A8%E7%AC%A0+%E7%94%B7%E5%A5%B3' },
+      { title: '脱口秀大会S3', desc: '第三季表演引发广泛讨论，成为最具争议也最具影响力的演员之一。', link: 'https://www.douyin.com/search/%E6%9D%A8%E7%AC%A0+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+      { title: '关于职场', desc: '「职场里最难的不是工作，是假装自己很喜欢工作。」', link: 'https://www.douyin.com/search/%E6%9D%A8%E7%AC%A0+%E8%81%8C%E5%9C%BA' },
+      { title: '关于外貌', desc: '「我不是不在乎外貌，我只是不在乎你在不在乎我的外貌。」', link: 'https://www.douyin.com/search/%E6%9D%A8%E7%AC%A0+%E5%A4%96%E8%B2%8C' },
+    ]
+  },
+  {
+    id: 'p5', name: '颜怡颜悦', type: 'pro', title: '双胞胎脱口秀演员',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/b1108cbe08e17844be57c481834e71c7.jpg',
+    shows: ['脱口秀大会S2','脱口秀大会S3','脱口秀大会S4','脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E9%A2%9C%E6%80%A1%E9%A2%9C%E6%82%A6+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '双胞胎的烦恼', desc: '「我们最大的问题是，别人永远分不清我们，但我们自己也快分不清了。」', link: 'https://www.douyin.com/search/%E9%A2%9C%E6%80%A1%E9%A2%9C%E6%82%A6+%E5%8F%8C%E8%83%9E%E8%83%8E' },
+      { title: '关于女性友谊', desc: '以双胞胎视角探讨女性友谊，笑点与温情并存。', link: 'https://www.douyin.com/search/%E9%A2%9C%E6%80%A1%E9%A2%9C%E6%82%A6+%E5%A5%B3%E6%80%A7' },
+      { title: '脱口秀大会S3经典段', desc: '第三季表演，以独特的双人配合方式呈现，令人印象深刻。', link: 'https://www.douyin.com/search/%E9%A2%9C%E6%80%A1%E9%A2%9C%E6%82%A6+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+      { title: '关于相亲', desc: '「相亲最尴尬的是，对方比你还不想来。」', link: 'https://www.douyin.com/search/%E9%A2%9C%E6%80%A1%E9%A2%9C%E6%82%A6+%E7%9B%B8%E4%BA%B2' },
+    ]
+  },
+  {
+    id: 'p6', name: '张博洋', type: 'pro', title: '脱口秀演员 / 文字控',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p1570901476.49.webp',
+    shows: ['脱口秀大会S3','脱口秀大会S4','脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E5%BC%A0%E5%8D%9A%E6%B4%8B+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '关于文字游戏', desc: '「我写段子的时候，每个字都是精心设计的，但说出来的时候，我假装是随口一说。」', link: 'https://www.douyin.com/search/%E5%BC%A0%E5%8D%9A%E6%B4%8B+%E6%AE%B5%E5%AD%90' },
+      { title: '脱口秀大会S3', desc: '第三季表演令人惊艳，文字密度极高，被誉为「最有文学性的脱口秀演员」。', link: 'https://www.douyin.com/search/%E5%BC%A0%E5%8D%9A%E6%B4%8B+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+      { title: '关于北京', desc: '「北京最好的地方是，你可以假装自己是个文化人。」', link: 'https://www.douyin.com/search/%E5%BC%A0%E5%8D%9A%E6%B4%8B+%E5%8C%97%E4%BA%AC' },
+      { title: '关于读书', desc: '「读书最大的好处是，你可以用别人的话来表达自己的意思，显得很有文化。」', link: 'https://www.douyin.com/search/%E5%BC%A0%E5%8D%9A%E6%B4%8B+%E8%AF%BB%E4%B9%A6' },
+    ]
+  },
+  {
+    id: 'p7', name: '徐志胜', type: 'pro', title: '脱口秀演员 / 外貌自嘲大师',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/5dac6e3ee3c9c4d50a384212a060d4fd.jpg',
+    shows: ['脱口秀大会S3','脱口秀大会S4','脱口秀大会S5','吐槽大会S5'],
+    douyin: 'https://www.douyin.com/search/%E5%BE%90%E5%BF%97%E8%83%9C+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '外貌自嘲系列', desc: '「我长这样，是老天爷给我的礼物，让我永远不用担心有人喜欢我。」', link: 'https://www.douyin.com/search/%E5%BE%90%E5%BF%97%E8%83%9C+%E5%A4%96%E8%B2%8C' },
+      { title: '关于颜值', desc: '「颜值这东西，我没有，但我有自知之明，这也是一种美德。」', link: 'https://www.douyin.com/search/%E5%BE%90%E5%BF%97%E8%83%9C+%E9%A2%9C%E5%80%BC' },
+      { title: '脱口秀大会S3爆发', desc: '第三季一鸣惊人，以密集的自嘲笑点征服观众。', link: 'https://www.douyin.com/search/%E5%BE%90%E5%BF%97%E8%83%9C+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+      { title: '关于相亲', desc: '「相亲对象见到我的第一眼，就知道今天可以早点回家了。」', link: 'https://www.douyin.com/search/%E5%BE%90%E5%BF%97%E8%83%9C+%E7%9B%B8%E4%BA%B2' },
+      { title: '关于自信', desc: '「我很自信，因为我知道我没什么可失去的。」', link: 'https://www.douyin.com/search/%E5%BE%90%E5%BF%97%E8%83%9C+%E8%87%AA%E4%BF%A1' },
+    ]
+  },
+  {
+    id: 'p8', name: '何广智', type: 'pro', title: '脱口秀演员 / 穷人哲学家',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/b30589cd25ec41d1ed590af4269fdb86.jpg',
+    shows: ['脱口秀大会S3','脱口秀大会S4','脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E4%BD%95%E5%B9%BF%E6%99%BA+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '穷人哲学', desc: '「穷不是问题，穷而不自知才是问题。我很自知，所以我很穷。」', link: 'https://www.douyin.com/search/%E4%BD%95%E5%B9%BF%E6%99%BA+%E7%A9%B7' },
+      { title: '关于租房', desc: '「我租的房子，厕所和厨房是一体的，我叫它厨厕，很方便，做饭的时候可以顺便上厕所。」', link: 'https://www.douyin.com/search/%E4%BD%95%E5%B9%BF%E6%99%BA+%E7%A7%9F%E6%88%BF' },
+      { title: '脱口秀大会S3', desc: '第三季以「穷」为主题的系列段子，引发广泛共鸣。', link: 'https://www.douyin.com/search/%E4%BD%95%E5%B9%BF%E6%99%BA+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+      { title: '关于梦想', desc: '「我有梦想，但梦想没有我。」', link: 'https://www.douyin.com/search/%E4%BD%95%E5%B9%BF%E6%99%BA+%E6%A2%A6%E6%83%B3' },
+    ]
+  },
+  {
+    id: 'p9', name: '周奇墨', type: 'pro', title: '脱口秀演员 / 脱口秀大会S4冠军',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/3f65c7cbaac95297c6c1ce76df9392c7.jpg',
+    shows: ['脱口秀大会S3','脱口秀大会S4','脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E5%91%A8%E5%A5%87%E5%A2%A8+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '关于观察', desc: '「我写段子的方式是观察，观察那些大家都看见但没人说出来的事。」', link: 'https://www.douyin.com/search/%E5%91%A8%E5%A5%87%E5%A2%A8+%E8%A7%82%E5%AF%9F' },
+      { title: '脱口秀大会S4夺冠', desc: '第四季总决赛，以精准的观察力和独特的表达方式夺冠。', link: 'https://www.douyin.com/search/%E5%91%A8%E5%A5%87%E5%A2%A8+%E5%A4%BA%E5%86%A0' },
+      { title: '关于生活细节', desc: '「生活里最有趣的事，都藏在那些没人注意的细节里。」', link: 'https://www.douyin.com/search/%E5%91%A8%E5%A5%87%E5%A2%A8+%E7%94%9F%E6%B4%BB' },
+      { title: '关于北方人', desc: '以北方人视角观察南北差异，笑点精准。', link: 'https://www.douyin.com/search/%E5%91%A8%E5%A5%87%E5%A2%A8+%E5%8C%97%E6%96%B9' },
+      { title: '关于工作', desc: '「工作最难的不是工作本身，是假装自己在工作。」', link: 'https://www.douyin.com/search/%E5%91%A8%E5%A5%87%E5%A2%A8+%E5%B7%A5%E4%BD%9C' },
+    ]
+  },
+  {
+    id: 'p10', name: '鸟鸟', type: 'pro', title: '脱口秀演员 / 社恐代言人',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/0fc80f1385731d452b69b443aa51b5e2.jpg',
+    shows: ['脱口秀大会S4','脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E9%B8%9F%E9%B8%9F+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '社恐系列', desc: '「社恐不是病，是一种生活方式，一种非常安静的生活方式。」', link: 'https://www.douyin.com/search/%E9%B8%9F%E9%B8%9F+%E7%A4%BE%E6%81%90' },
+      { title: '关于内向', desc: '「内向的人不是不想说话，是说话之前要先在脑子里排练三遍。」', link: 'https://www.douyin.com/search/%E9%B8%9F%E9%B8%9F+%E5%86%85%E5%90%91' },
+      { title: '脱口秀大会S4', desc: '第四季以「社恐」为主题的系列段子，引发大量共鸣。', link: 'https://www.douyin.com/search/%E9%B8%9F%E9%B8%9F+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+      { title: '关于聚会', desc: '「我最喜欢的聚会是那种，我去了，但没人注意到我去了。」', link: 'https://www.douyin.com/search/%E9%B8%9F%E9%B8%9F+%E8%81%9A%E4%BC%9A' },
+      { title: '关于表达', desc: '「我有很多想说的话，但说出来之前，我已经后悔了。」', link: 'https://www.douyin.com/search/%E9%B8%9F%E9%B8%9F+%E8%A1%A8%E8%BE%BE' },
+    ]
+  },
+  {
+    id: 'p11', name: '赵晓卉', type: 'pro', title: '脱口秀演员 / 理工女代表',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/c8dd871a8cbc5770ff329dc4bf648db5.jpg',
+    shows: ['脱口秀大会S4','脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E8%B5%B5%E6%99%93%E5%8D%89+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '理工女视角', desc: '「理工女最大的问题是，我们用解方程的方式处理感情问题。」', link: 'https://www.douyin.com/search/%E8%B5%B5%E6%99%93%E5%8D%89+%E7%90%86%E5%B7%A5' },
+      { title: '关于程序员', desc: '「程序员谈恋爱，最大的问题是，他们把感情当bug来修。」', link: 'https://www.douyin.com/search/%E8%B5%B5%E6%99%93%E5%8D%89+%E7%A8%8B%E5%BA%8F%E5%91%98' },
+      { title: '脱口秀大会S4', desc: '第四季以理工女视角切入，笑点独特，令人耳目一新。', link: 'https://www.douyin.com/search/%E8%B5%B5%E6%99%93%E5%8D%89+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+      { title: '关于数据', desc: '「我用数据分析了一下我的感情生活，结论是：样本量不足。」', link: 'https://www.douyin.com/search/%E8%B5%B5%E6%99%93%E5%8D%89+%E6%95%B0%E6%8D%AE' },
+    ]
+  },
+  {
+    id: 'p12', name: '付航', type: 'pro', title: '脱口秀演员 / 喜剧之王S1冠军',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/abc9f0af83548177efcac99ee6d9db44.jpg',
+    shows: ['脱口秀大会S5','喜剧之王单口季S1'],
+    douyin: 'https://www.douyin.com/search/%E4%BB%98%E8%88%AA+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '热爱名场面', desc: '「我热爱生活！」喜剧之王S1总决赛，付航的「热爱」演讲引爆全网，成为年度最佳名场面。', link: 'https://www.douyin.com/search/%E4%BB%98%E8%88%AA+%E7%83%AD%E7%88%B1' },
+      { title: '关于失败', desc: '「失败不可怕，可怕的是失败了还要假装没失败。」', link: 'https://www.douyin.com/search/%E4%BB%98%E8%88%AA+%E5%A4%B1%E8%B4%A5' },
+      { title: '喜剧之王夺冠', desc: '喜剧之王单口季S1总决赛，以极具感染力的表演夺冠，全场起立鼓掌。', link: 'https://www.douyin.com/search/%E4%BB%98%E8%88%AA+%E5%96%9C%E5%89%A7%E4%B9%8B%E7%8E%8B' },
+      { title: '关于坚持', desc: '「坚持不是因为看到了希望，而是坚持本身就是希望。」', link: 'https://www.douyin.com/search/%E4%BB%98%E8%88%AA+%E5%9D%9A%E6%8C%81' },
+      { title: '关于梦想', desc: '「梦想这东西，你不追它，它也不会来找你。」', link: 'https://www.douyin.com/search/%E4%BB%98%E8%88%AA+%E6%A2%A6%E6%83%B3' },
+    ]
+  },
+  {
+    id: 'p13', name: '李雪琴', type: 'pro', title: '脱口秀演员 / 东北文学女青年',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/79f5ee400c324d10749a114e008957d6.jpg',
+    shows: ['吐槽大会S4','脱口秀大会S3','脱口秀大会S4'],
+    douyin: 'https://www.douyin.com/search/%E6%9D%8E%E9%9B%AA%E7%90%B4+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '宇宙的尽头是铁岭', desc: '「宇宙的尽头是铁岭」，这句话让李雪琴一夜成名，也让铁岭成了网红城市。', link: 'https://www.douyin.com/search/%E6%9D%8E%E9%9B%AA%E7%90%B4+%E9%93%81%E5%B2%AD' },
+      { title: '关于东北', desc: '「东北人最大的特点是，无论发生什么，都能找到笑点。」', link: 'https://www.douyin.com/search/%E6%9D%8E%E9%9B%AA%E7%90%B4+%E4%B8%9C%E5%8C%97' },
+      { title: '吐槽大会S4黑马', desc: '吐槽大会第四季横空出世，以东北式幽默征服全场。', link: 'https://www.douyin.com/search/%E6%9D%8E%E9%9B%AA%E7%90%B4+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A' },
+      { title: '关于北大', desc: '「我是北大毕业的，但我现在做的事，北大没教过我。」', link: 'https://www.douyin.com/search/%E6%9D%8E%E9%9B%AA%E7%90%B4+%E5%8C%97%E5%A4%A7' },
+      { title: '关于抑郁', desc: '以轻松方式谈论抑郁症，让更多人了解心理健康，引发社会关注。', link: 'https://www.douyin.com/search/%E6%9D%8E%E9%9B%AA%E7%90%B4+%E6%8A%91%E9%83%81' },
+    ]
+  },
+  {
+    id: 'p14', name: '孟川', type: 'pro', title: '脱口秀演员 / 生活观察者',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/19300ee37d92c62522b930c09cdf186d.jpg',
+    shows: ['脱口秀大会S5','喜剧之王单口季S1'],
+    douyin: 'https://www.douyin.com/search/%E5%AD%9F%E5%B7%9D+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '关于中年危机', desc: '「中年危机不是危机，是你终于意识到，你一直以为的那个自己，其实不存在。」', link: 'https://www.douyin.com/search/%E5%AD%9F%E5%B7%9D+%E4%B8%AD%E5%B9%B4' },
+      { title: '关于婚姻', desc: '「婚姻最大的问题是，你以为你了解对方，其实你只了解你以为的对方。」', link: 'https://www.douyin.com/search/%E5%AD%9F%E5%B7%9D+%E5%A9%9A%E5%A7%BB' },
+      { title: '脱口秀大会S5', desc: '第五季以细腻的生活观察见长，笑点来自日常细节。', link: 'https://www.douyin.com/search/%E5%AD%9F%E5%B7%9D+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p15', name: 'Rock', type: 'pro', title: '脱口秀演员 / 笑果元老',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/prbOeMjmFg9Icel_avatar_uploaded1545459030.44.webp',
+    shows: ['脱口秀大会S1','脱口秀大会S2','脱口秀大会S3'],
+    douyin: 'https://www.douyin.com/search/Rock+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '关于胖子', desc: '「胖不是问题，问题是胖了还要假装不胖。」', link: 'https://www.douyin.com/search/Rock+%E8%84%B1%E5%8F%A3%E7%A7%80' },
+      { title: '笑果元老段子', desc: '作为笑果文化元老，Rock的段子风格直接、接地气。', link: 'https://www.douyin.com/search/Rock+%E7%AC%91%E6%9E%9C' },
+      { title: '关于减肥', desc: '「减肥这件事，我每年都在开始，但从来没有结束过。」', link: 'https://www.douyin.com/search/Rock+%E5%87%8F%E8%82%A5' },
+    ]
+  },
+  {
+    id: 'p16', name: '程璐', type: 'pro', title: '脱口秀演员 / 段子手',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/8ad06cb42e9f92a5eab5fd231d3dcc3d.jpg',
+    shows: ['脱口秀大会S1','脱口秀大会S2','脱口秀大会S3','吐槽大会S1'],
+    douyin: 'https://www.douyin.com/search/%E7%A8%8B%E7%92%90+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '关于写段子', desc: '「写段子最难的是，你以为你写了一个好段子，但观众以为你在说真话。」', link: 'https://www.douyin.com/search/%E7%A8%8B%E7%92%90+%E6%AE%B5%E5%AD%90' },
+      { title: '关于婚姻', desc: '「婚姻就是两个人一起面对，那些一个人面对时觉得很难的事。」', link: 'https://www.douyin.com/search/%E7%A8%8B%E7%92%90+%E5%A9%9A%E5%A7%BB' },
+      { title: '脱口秀大会早期', desc: '早期脱口秀大会的重要演员，风格成熟稳健。', link: 'https://www.douyin.com/search/%E7%A8%8B%E7%92%90+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p17', name: '思文', type: 'pro', title: '脱口秀演员 / 女性视角先驱',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/16a2e26deafa2d24dd67c07e57e37f01.jpg',
+    shows: ['脱口秀大会S1','脱口秀大会S2','脱口秀大会S3'],
+    douyin: 'https://www.douyin.com/search/%E6%80%9D%E6%96%87+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '关于婚姻中的女性', desc: '「婚姻里最难的不是爱，是在爱里保持自我。」', link: 'https://www.douyin.com/search/%E6%80%9D%E6%96%87+%E5%A9%9A%E5%A7%BB' },
+      { title: '女性视角系列', desc: '早期以女性视角切入脱口秀，为后来的杨笠等人开辟了道路。', link: 'https://www.douyin.com/search/%E6%80%9D%E6%96%87+%E5%A5%B3%E6%80%A7' },
+      { title: '关于独立', desc: '「独立不是不需要别人，是你可以选择需要谁。」', link: 'https://www.douyin.com/search/%E6%80%9D%E6%96%87+%E7%8B%AC%E7%AB%8B' },
+    ]
+  },
+  {
+    id: 'p18', name: '卡姆', type: 'pro', title: '脱口秀演员 / 喜剧演员',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p1567223405.02.webp',
+    shows: ['脱口秀大会S1','脱口秀大会S2','吐槽大会S2'],
+    douyin: 'https://www.douyin.com/search/%E5%8D%A1%E5%A7%86+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '关于东北文化', desc: '以东北文化为素材，笑点接地气，深受观众喜爱。', link: 'https://www.douyin.com/search/%E5%8D%A1%E5%A7%86+%E4%B8%9C%E5%8C%97' },
+      { title: '脱口秀大会早期', desc: '早期脱口秀大会的重要演员，风格豪放不羁。', link: 'https://www.douyin.com/search/%E5%8D%A1%E5%A7%86+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p19', name: '王建国', type: 'pro', title: '脱口秀演员 / 文艺青年',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p1565186602.92.webp',
+    shows: ['脱口秀大会S1','脱口秀大会S2','脱口秀大会S3','脱口秀大会S4'],
+    douyin: 'https://www.douyin.com/search/%E7%8E%8B%E5%BB%BA%E5%9B%BD+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '关于文艺', desc: '「文艺青年最大的问题是，他们把所有事情都想得太复杂了。」', link: 'https://www.douyin.com/search/%E7%8E%8B%E5%BB%BA%E5%9B%BD+%E6%96%87%E8%89%BA' },
+      { title: '关于爱情', desc: '「爱情最美好的时候，是你还不知道对方是什么人的时候。」', link: 'https://www.douyin.com/search/%E7%8E%8B%E5%BB%BA%E5%9B%BD+%E7%88%B1%E6%83%85' },
+      { title: '脱口秀大会系列', desc: '多季脱口秀大会的常驻演员，风格文艺而不失幽默。', link: 'https://www.douyin.com/search/%E7%8E%8B%E5%BB%BA%E5%9B%BD+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+      { title: '关于北漂', desc: '「北漂最难的不是漂，是漂了很久之后，你忘了自己从哪里来。」', link: 'https://www.douyin.com/search/%E7%8E%8B%E5%BB%BA%E5%9B%BD+%E5%8C%97%E6%BC%82' },
+    ]
+  },
+  {
+    id: 'p20', name: '呼兰', type: 'pro', title: '脱口秀演员 / 金融才子',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/0ab6b109f61e95b88b4e22bf823d1311.jpg',
+    shows: ['脱口秀大会S2','脱口秀大会S3','脱口秀大会S4','脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E5%91%BC%E5%85%B0+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '关于金融', desc: '「金融最大的秘密是，没有人真的懂金融，但大家都假装懂。」', link: 'https://www.douyin.com/search/%E5%91%BC%E5%85%B0+%E9%87%91%E8%9E%8D' },
+      { title: '关于精英', desc: '「精英最大的问题是，他们以为自己是精英。」', link: 'https://www.douyin.com/search/%E5%91%BC%E5%85%B0+%E7%B2%BE%E8%8B%B1' },
+      { title: '脱口秀大会S3', desc: '第三季以金融从业者视角切入，笑点独特犀利。', link: 'https://www.douyin.com/search/%E5%91%BC%E5%85%B0+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+      { title: '关于留学', desc: '「留学最大的收获是，你终于知道，外国人也不知道自己在干什么。」', link: 'https://www.douyin.com/search/%E5%91%BC%E5%85%B0+%E7%95%99%E5%AD%A6' },
+      { title: '关于阶层', desc: '「阶层固化不是问题，问题是你以为自己可以突破阶层。」', link: 'https://www.douyin.com/search/%E5%91%BC%E5%85%B0+%E9%98%B6%E5%B1%82' },
+    ]
+  },
+  {
+    id: 'p21', name: '庞博', type: 'pro', title: '脱口秀演员 / 脱口秀大会S1冠军',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/22385028659ebc36a98168d1f9cddbfb.jpg',
+    shows: ['脱口秀大会S1','脱口秀大会S2','脱口秀大会S3'],
+    douyin: 'https://www.douyin.com/search/%E5%BA%9E%E5%8D%9A+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱口秀大会S1夺冠', desc: '第一季总决赛夺冠，以清新的风格和精准的笑点征服观众。', link: 'https://www.douyin.com/search/%E5%BA%9E%E5%8D%9A+%E5%A4%BA%E5%86%A0' },
+      { title: '关于年轻人', desc: '「年轻人最大的优势是，你还不知道什么是不可能的。」', link: 'https://www.douyin.com/search/%E5%BA%9E%E5%8D%9A+%E5%B9%B4%E8%BD%BB%E4%BA%BA' },
+      { title: '关于理想', desc: '「理想和现实的差距，就是你每天早上不想起床的原因。」', link: 'https://www.douyin.com/search/%E5%BA%9E%E5%8D%9A+%E7%90%86%E6%83%B3' },
+    ]
+  },
+  {
+    id: 'p22', name: '杨迪', type: 'pro', title: '脱口秀演员 / 综艺咖',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p1504676489.47.webp',
+    shows: ['吐槽大会S5'],
+    douyin: 'https://www.douyin.com/search/%E6%9D%A8%E8%BF%AA+%E5%90%90%E6%A7%BD',
+    bits: [
+      { title: '吐槽大会S5', desc: '第五季表现亮眼，以自嘲方式吐槽自己的综艺经历，笑点密集。', link: 'https://www.douyin.com/search/%E6%9D%A8%E8%BF%AA+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A' },
+      { title: '关于综艺', desc: '「综艺最难的不是表演，是假装自己不是在表演。」', link: 'https://www.douyin.com/search/%E6%9D%A8%E8%BF%AA+%E7%BB%BC%E8%89%BA' },
+    ]
+  },
+  {
+    id: 'p23', name: '小鹿', type: 'pro', title: '脱口秀演员 / 女性喜剧人',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/4f5405cc26a0380131c300499c8ab4e8.jpg',
+    shows: ['脱口秀大会S3','脱口秀大会S4'],
+    douyin: 'https://www.douyin.com/search/%E5%B0%8F%E9%B9%BF+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '关于女性独立', desc: '「独立女性不是不需要爱，是她们知道爱不是全部。」', link: 'https://www.douyin.com/search/%E5%B0%8F%E9%B9%BF+%E5%A5%B3%E6%80%A7' },
+      { title: '脱口秀大会S3', desc: '第三季以清新风格亮相，笑点温和而有力。', link: 'https://www.douyin.com/search/%E5%B0%8F%E9%B9%BF+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p24', name: '豆豆', type: 'pro', title: '脱口秀演员 / 新生代',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p1599618885.76.webp',
+    shows: ['脱口秀大会S5','喜剧之王单口季S2'],
+    douyin: 'https://www.douyin.com/search/%E8%B1%86%E8%B1%86+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '新生代风格', desc: '以Z世代视角切入，笑点新鲜，深受年轻观众喜爱。', link: 'https://www.douyin.com/search/%E8%B1%86%E8%B1%86+%E8%84%B1%E5%8F%A3%E7%A7%80' },
+      { title: '关于躺平', desc: '「躺平不是懒，是一种战略性撤退。」', link: 'https://www.douyin.com/search/%E8%B1%86%E8%B1%86+%E8%BA%BA%E5%B9%B3' },
+    ]
+  },
+  {
+    id: 'p25', name: '邱瑞', type: 'pro', title: '脱口秀演员 / 理性派',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/b00e3a61ac699fd669f0f48e4d95687e.jpg',
+    shows: ['脱口秀大会S4','脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E9%82%B1%E7%91%9E+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '关于理性', desc: '「理性最大的问题是，它让你看清了一切，但看清了之后你更难受了。」', link: 'https://www.douyin.com/search/%E9%82%B1%E7%91%9E+%E7%90%86%E6%80%A7' },
+      { title: '脱口秀大会S4', desc: '第四季以理性分析见长，笑点来自对社会现象的精准解构。', link: 'https://www.douyin.com/search/%E9%82%B1%E7%91%9E+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  // ===== 新增演员 p26-p65 =====
+  {
+    id: 'p26', name: '张祐维', type: 'pro', title: '脱口秀演员 / 脱他S1选手',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/4a1a441eeef55d8cb8a061d0908a260c.jpg',
+    shows: ['脱他S1'],
+    douyin: 'https://www.douyin.com/search/%E5%BC%A0%E7%A5%90%E7%BB%B4+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱他S1表演', desc: '脱他第一季选手，以独特的个人风格在节目中崭露头角。', link: 'https://www.douyin.com/search/%E5%BC%A0%E7%A5%90%E7%BB%B4+%E8%84%B1%E4%BB%96' },
+      { title: '关于生活', desc: '以细腻的生活观察切入，笑点真实接地气。', link: 'https://www.douyin.com/search/%E5%BC%A0%E7%A5%90%E7%BB%B4+%E8%84%B1%E5%8F%A3%E7%A7%80' },
+    ]
+  },
+  {
+    id: 'p27', name: '赵晓棠', type: 'pro', title: '脱口秀演员 / 脱他S1选手',
+    shows: ['脱他S1'],
+    douyin: 'https://www.douyin.com/search/%E8%B5%B5%E6%99%93%E6%A3%A0+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱他S1', desc: '脱他第一季选手，以女性视角带来新鲜笑点。', link: 'https://www.douyin.com/search/%E8%B5%B5%E6%99%93%E6%A3%A0+%E8%84%B1%E4%BB%96' },
+    ]
+  },
+  {
+    id: 'p28', name: '唐香玉', type: 'pro', title: '脱口秀演员 / 脱他S1 · 主咖',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/4196664adc224c1c92a872a876b87681.jpg',
+    shows: ['脱他S1','主咖和Ta的朋友们'],
+    douyin: 'https://www.douyin.com/search/%E5%94%90%E9%A6%99%E7%8E%89+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱他S1表演', desc: '脱他第一季亮眼选手，风格独特，深受观众喜爱。', link: 'https://www.douyin.com/search/%E5%94%90%E9%A6%99%E7%8E%89+%E8%84%B1%E4%BB%96' },
+      { title: '主咖登场', desc: '主咖和Ta的朋友们中担任主咖，展现更成熟的舞台表现力。', link: 'https://www.douyin.com/search/%E5%94%90%E9%A6%99%E7%8E%89+%E4%B8%BB%E5%92%96' },
+    ]
+  },
+  {
+    id: 'p29', name: '徐浩伦', type: 'pro', title: '脱口秀演员 / 脱他S1选手',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/d9aea7f8cfb696143a6b6b6d7fc4b159.jpg',
+    shows: ['脱他S1'],
+    douyin: 'https://www.douyin.com/search/%E5%BE%90%E6%B5%A9%E4%BC%A6+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱他S1', desc: '脱他第一季选手，以幽默的自我调侃赢得观众好感。', link: 'https://www.douyin.com/search/%E5%BE%90%E6%B5%A9%E4%BC%A6+%E8%84%B1%E4%BB%96' },
+    ]
+  },
+  {
+    id: 'p30', name: '杨蒙恩', type: 'pro', title: '脱口秀演员 / 脱他S1 · 主咖',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/pDw83mFPuJ-kcel_avatar_uploaded1528292941.25.webp',
+    shows: ['脱他S1','主咖和Ta的朋友们'],
+    douyin: 'https://www.douyin.com/search/%E6%9D%A8%E8%92%99%E6%81%A9+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱他S1', desc: '脱他第一季选手，以温暖幽默的风格打动观众。', link: 'https://www.douyin.com/search/%E6%9D%A8%E8%92%99%E6%81%A9+%E8%84%B1%E4%BB%96' },
+      { title: '主咖登场', desc: '主咖和Ta的朋友们中担任主咖，展现个人魅力。', link: 'https://www.douyin.com/search/%E6%9D%A8%E8%92%99%E6%81%A9+%E4%B8%BB%E5%92%96' },
+    ]
+  },
+  {
+    id: 'p31', name: '毛豆', type: 'pro', title: '脱口秀演员 / 脱他S1选手',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/a3e575d57be6509992d0c67aff507461.jpg',
+    shows: ['脱他S1','脱他S2'],
+    douyin: 'https://www.douyin.com/search/%E6%AF%9B%E8%B1%86+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱他S1', desc: '脱他第一季选手，以清新自然的风格赢得好评。', link: 'https://www.douyin.com/search/%E6%AF%9B%E8%B1%86+%E8%84%B1%E4%BB%96' },
+      { title: '脱他S2回归', desc: '第二季回归，风格更加成熟，笑点更加精准。', link: 'https://www.douyin.com/search/%E6%AF%9B%E8%B1%86+%E8%84%B1%E4%BB%96' },
+    ]
+  },
+  {
+    id: 'p32', name: '赵英男', type: 'pro', title: '脱口秀演员 / 脱他S2选手',
+    shows: ['脱他S2'],
+    douyin: 'https://www.douyin.com/search/%E8%B5%B5%E8%8B%B1%E7%94%B7+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱他S2', desc: '脱他第二季选手，以独特视角和犀利笑点赢得观众认可。', link: 'https://www.douyin.com/search/%E8%B5%B5%E8%8B%B1%E7%94%B7+%E8%84%B1%E4%BB%96' },
+    ]
+  },
+  {
+    id: 'p33', name: '李昊石', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/e6b7554d135149c964c0ef8b6e02cc9c.jpg',
+    shows: ['脱口秀大会S4','脱口秀大会S5','喜剧之王单口季S2'],
+    douyin: 'https://www.douyin.com/search/%E6%9D%8E%E6%98%8A%E7%9F%B3+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱口秀大会S4', desc: '第四季以清新风格亮相，笑点密集，深受年轻观众喜爱。', link: 'https://www.douyin.com/search/%E6%9D%8E%E6%98%8A%E7%9F%B3+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+      { title: '关于年轻人', desc: '以年轻人视角观察社会，笑点新鲜，引发共鸣。', link: 'https://www.douyin.com/search/%E6%9D%8E%E6%98%8A%E7%9F%B3+%E5%B9%B4%E8%BD%BB%E4%BA%BA' },
+    ]
+  },
+  {
+    id: 'p34', name: '童漠男', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/d5aed0cab38a10372c73be0678f0a073.jpg',
+    shows: ['脱口秀大会S4','脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E7%AB%A5%E6%BC%A0%E7%94%B7+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '关于文学', desc: '以文学青年视角切入，笑点有深度，令人回味。', link: 'https://www.douyin.com/search/%E7%AB%A5%E6%BC%A0%E7%94%B7+%E8%84%B1%E5%8F%A3%E7%A7%80' },
+      { title: '脱口秀大会S4', desc: '第四季表现稳健，风格独特，是笑果文化新生代代表。', link: 'https://www.douyin.com/search/%E7%AB%A5%E6%BC%A0%E7%94%B7+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p35', name: '海源', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p1565187029.73.webp',
+    shows: ['脱口秀大会S4','脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E6%B5%B7%E6%BA%90+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱口秀大会S4', desc: '第四季以幽默的生活观察见长，笑点来自日常细节。', link: 'https://www.douyin.com/search/%E6%B5%B7%E6%BA%90+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p36', name: '杨波', type: 'pro', title: '脱口秀演员 / 笑果文化元老',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/fc9ba54ea9a7eefee20911e15763219d.jpg',
+    shows: ['脱口秀大会S1','脱口秀大会S2','脱口秀大会S3'],
+    douyin: 'https://www.douyin.com/search/%E6%9D%A8%E6%B3%A2+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '笑果元老风格', desc: '笑果文化早期重要演员，风格成熟，段子扎实。', link: 'https://www.douyin.com/search/%E6%9D%A8%E6%B3%A2+%E8%84%B1%E5%8F%A3%E7%A7%80' },
+      { title: '关于生活', desc: '以平实的生活视角切入，笑点真实，引发共鸣。', link: 'https://www.douyin.com/search/%E6%9D%A8%E6%B3%A2+%E8%84%B1%E5%8F%A3%E7%A7%80' },
+    ]
+  },
+  {
+    id: 'p37', name: '建国', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    shows: ['脱口秀大会S2','脱口秀大会S3'],
+    douyin: 'https://www.douyin.com/search/%E5%BB%BA%E5%9B%BD+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '关于生活', desc: '以幽默的生活观察见长，笑点来自日常细节。', link: 'https://www.douyin.com/search/%E5%BB%BA%E5%9B%BD+%E8%84%B1%E5%8F%A3%E7%A7%80' },
+    ]
+  },
+  {
+    id: 'p38', name: '赵元', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    shows: ['脱口秀大会S3','脱口秀大会S4'],
+    douyin: 'https://www.douyin.com/search/%E8%B5%B5%E5%85%83+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱口秀大会S3', desc: '第三季以独特风格亮相，笑点精准，令人印象深刻。', link: 'https://www.douyin.com/search/%E8%B5%B5%E5%85%83+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p39', name: '土豆', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    shows: ['脱口秀大会S3','脱口秀大会S4'],
+    douyin: 'https://www.douyin.com/search/%E5%9C%9F%E8%B1%86+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱口秀大会S3', desc: '第三季以接地气的风格赢得观众喜爱。', link: 'https://www.douyin.com/search/%E5%9C%9F%E8%B1%86+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p40', name: '黑灯', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/cdd331f887eee1203412c92c6a7e579f.jpg',
+    shows: ['脱口秀大会S4','脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E9%BB%91%E7%81%AF+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱口秀大会S4', desc: '第四季以黑色幽默风格亮相，笑点犀利，令人印象深刻。', link: 'https://www.douyin.com/search/%E9%BB%91%E7%81%AF+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+      { title: '关于社会现象', desc: '以独特视角解构社会现象，笑点深刻。', link: 'https://www.douyin.com/search/%E9%BB%91%E7%81%AF+%E8%84%B1%E5%8F%A3%E7%A7%80' },
+    ]
+  },
+  {
+    id: 'p41', name: '步惊云', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/413bc1afe975440229a000fe156dbf98.jpg',
+    shows: ['脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E6%AD%A5%E6%83%8A%E4%BA%91+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱口秀大会S5', desc: '第五季新人，以独特的名字和风格引发关注。', link: 'https://www.douyin.com/search/%E6%AD%A5%E6%83%8A%E4%BA%91+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p42', name: '徐鹤', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    shows: ['脱口秀大会S5'],
+    douyin: 'https://www.douyin.com/search/%E5%BE%90%E9%B9%A4+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱口秀大会S5', desc: '第五季新人，以清新风格和精准笑点赢得观众好感。', link: 'https://www.douyin.com/search/%E5%BE%90%E9%B9%A4+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p43', name: '王梓晗', type: 'pro', title: '脱口秀演员 / 喜剧之王S2选手',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/fd0786c662cdf798f3ab8aeebc92c2de.jpg',
+    shows: ['喜剧之王单口季S2'],
+    douyin: 'https://www.douyin.com/search/%E7%8E%8B%E6%A2%93%E6%99%97+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '喜剧之王S2', desc: '喜剧之王第二季选手，以独特风格在竞争激烈的赛场中脱颖而出。', link: 'https://www.douyin.com/search/%E7%8E%8B%E6%A2%93%E6%99%97+%E5%96%9C%E5%89%A7%E4%B9%8B%E7%8E%8B' },
+    ]
+  },
+  {
+    id: 'p44', name: '张骞', type: 'pro', title: '脱口秀演员 / 喜剧之王S2选手',
+    shows: ['喜剧之王单口季S2'],
+    douyin: 'https://www.douyin.com/search/%E5%BC%A0%E9%AA%9E+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '喜剧之王S2', desc: '喜剧之王第二季选手，以扎实的段子功底赢得评委认可。', link: 'https://www.douyin.com/search/%E5%BC%A0%E9%AA%9E+%E5%96%9C%E5%89%A7%E4%B9%8B%E7%8E%8B' },
+    ]
+  },
+  {
+    id: 'p45', name: '刘旸', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/4345b83b4641d60263ee665797b812a6.jpg',
+    shows: ['脱口秀大会S1','脱口秀大会S2','脱口秀大会S3'],
+    douyin: 'https://www.douyin.com/search/%E5%88%98%E6%97%B8+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '笑果早期风格', desc: '笑果文化早期重要演员，以幽默的生活观察见长。', link: 'https://www.douyin.com/search/%E5%88%98%E6%97%B8+%E8%84%B1%E5%8F%A3%E7%A7%80' },
+      { title: '关于北漂', desc: '以北漂视角讲述城市生活，笑点真实，引发共鸣。', link: 'https://www.douyin.com/search/%E5%88%98%E6%97%B8+%E5%8C%97%E6%BC%82' },
+    ]
+  },
+  {
+    id: 'p46', name: '史炎', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p4Zs_hAOOkGccel_avatar_uploaded1518153123.62.webp',
+    shows: ['脱口秀大会S1','脱口秀大会S2'],
+    douyin: 'https://www.douyin.com/search/%E5%8F%B2%E7%82%8E+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '笑果早期风格', desc: '笑果文化早期演员，风格成熟，段子扎实。', link: 'https://www.douyin.com/search/%E5%8F%B2%E7%82%8E+%E8%84%B1%E5%8F%A3%E7%A7%80' },
+    ]
+  },
+  {
+    id: 'p47', name: '赵晓卉', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/c8dd871a8cbc5770ff329dc4bf648db5.jpg',
+    shows: ['脱口秀大会S2','脱口秀大会S3'],
+    douyin: 'https://www.douyin.com/search/%E8%B5%B5%E6%99%93%E5%8D%89+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱口秀大会S2', desc: '第二季以女性视角切入，笑点独特，令人耳目一新。', link: 'https://www.douyin.com/search/%E8%B5%B5%E6%99%93%E5%8D%89+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p48', name: '张超', type: 'pro', title: '脱口秀演员 / 吐槽大会常驻',
+    shows: ['吐槽大会S1','吐槽大会S2','吐槽大会S3','吐槽大会S4'],
+    douyin: 'https://www.douyin.com/search/%E5%BC%A0%E8%B6%85+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会常驻', desc: '吐槽大会多季常驻演员，以犀利的吐槽风格深受观众喜爱。', link: 'https://www.douyin.com/search/%E5%BC%A0%E8%B6%85+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A' },
+      { title: '关于娱乐圈', desc: '以娱乐圈内部视角切入，笑点犀利，令人印象深刻。', link: 'https://www.douyin.com/search/%E5%BC%A0%E8%B6%85+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'p49', name: '王自健', type: 'pro', title: '脱口秀演员 / 中国脱口秀先驱',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/pwviB4QqqVOocel_avatar_uploaded1358737569.07.webp',
+    shows: ['脱口秀大会S1'],
+    douyin: 'https://www.douyin.com/search/%E7%8E%8B%E8%87%AA%E5%81%A5+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '中国脱口秀先驱', desc: '中国最早的脱口秀演员之一，《今晚80后脱口秀》主持人，为中国脱口秀发展奠定基础。', link: 'https://www.douyin.com/search/%E7%8E%8B%E8%87%AA%E5%81%A5+%E8%84%B1%E5%8F%A3%E7%A7%80' },
+      { title: '关于80后', desc: '以80后视角观察社会，笑点真实，引发广泛共鸣。', link: 'https://www.douyin.com/search/%E7%8E%8B%E8%87%AA%E5%81%A5+80%E5%90%8E' },
+    ]
+  },
+  {
+    id: 'p50', name: '于祥宇', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/041a77874f61d02f2d68038ffcbbcc66.jpg',
+    shows: ['脱口秀大会S2','脱口秀大会S3'],
+    douyin: 'https://www.douyin.com/search/%E4%BA%8E%E7%A5%A5%E5%AE%87+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱口秀大会S2', desc: '第二季以幽默的生活观察见长，笑点来自日常细节。', link: 'https://www.douyin.com/search/%E4%BA%8E%E7%A5%A5%E5%AE%87+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p51', name: '周航', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    shows: ['脱口秀大会S3','脱口秀大会S4'],
+    douyin: 'https://www.douyin.com/search/%E5%91%A8%E8%88%AA+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱口秀大会S3', desc: '第三季以独特风格亮相，笑点精准，令人印象深刻。', link: 'https://www.douyin.com/search/%E5%91%A8%E8%88%AA+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p52', name: '王力宏', type: 'guest', title: '歌手 / 吐槽大会S4嘉宾',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/0af03956546971d1c6e16ef1384e3326.jpg',
+    shows: ['吐槽大会S4'],
+    douyin: 'https://www.douyin.com/search/%E7%8E%8B%E5%8A%9B%E5%AE%8F+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S4', desc: '第四季以自嘲方式吐槽自己的音乐生涯，展现了极强的自我解构能力。', link: 'https://www.douyin.com/search/%E7%8E%8B%E5%8A%9B%E5%AE%8F+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'p53', name: '周深', type: 'guest', title: '歌手 / 吐槽大会S5',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/6bb7565d57a55584fc19d562434756a1.jpg',
+    shows: ['吐槽大会S5'],
+    douyin: 'https://www.douyin.com/search/%E5%91%A8%E6%B7%B1+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S5', desc: '第五季以独特的嗓音和幽默感亮相，以自嘲方式吐槽自己的音乐风格。', link: 'https://www.douyin.com/search/%E5%91%A8%E6%B7%B1+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'p54', name: '刘维', type: 'guest', title: '演员 / 吐槽大会常驻嘉宾',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p1489666040.79.webp',
+    shows: ['吐槽大会S2','吐槽大会S3','吐槽大会S4','吐槽大会S5'],
+    douyin: 'https://www.douyin.com/search/%E5%88%98%E7%BB%B4+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会常驻', desc: '吐槽大会多季常驻演员，以犀利的吐槽风格和快速反应深受观众喜爱。', link: 'https://www.douyin.com/search/%E5%88%98%E7%BB%B4+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A' },
+      { title: '关于娱乐圈', desc: '以娱乐圈内部视角切入，笑点犀利，令人印象深刻。', link: 'https://www.douyin.com/search/%E5%88%98%E7%BB%B4+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'p55', name: '李逗逗', type: 'pro', title: '脱口秀演员 / 笑果文化',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/65bb3c3323b61a6b3775de7a68928ecc.jpg',
+    shows: ['脱口秀大会S5','喜剧之王单口季S1'],
+    douyin: 'https://www.douyin.com/search/%E6%9D%8E%E9%80%97%E9%80%97+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '脱口秀大会S5', desc: '第五季以独特风格亮相，笑点精准，令人印象深刻。', link: 'https://www.douyin.com/search/%E6%9D%8E%E9%80%97%E9%80%97+%E8%84%B1%E5%8F%A3%E7%A7%80%E5%A4%A7%E4%BC%9A' },
+    ]
+  },
+  {
+    id: 'p56', name: '王十七', type: 'pro', title: '脱口秀演员 / 喜剧之王S2选手',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/70bc3d85ced3badccfe41378b0d52987.jpg',
+    shows: ['喜剧之王单口季S2'],
+    douyin: 'https://www.douyin.com/search/%E7%8E%8B%E5%8D%81%E4%B8%83+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '喜剧之王S2', desc: '喜剧之王第二季选手，以扎实的段子功底赢得评委认可。', link: 'https://www.douyin.com/search/%E7%8E%8B%E5%8D%81%E4%B8%83+%E5%96%9C%E5%89%A7%E4%B9%8B%E7%8E%8B' },
+    ]
+  },
+  {
+    id: 'p57', name: '杨笑菲', type: 'pro', title: '脱口秀演员 / 喜剧之王S2选手',
+    shows: ['喜剧之王单口季S2'],
+    douyin: 'https://www.douyin.com/search/%E6%9D%A8%E7%AC%91%E8%8F%B2+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '喜剧之王S2', desc: '喜剧之王第二季选手，以女性视角带来新鲜笑点。', link: 'https://www.douyin.com/search/%E6%9D%A8%E7%AC%91%E8%8F%B2+%E5%96%9C%E5%89%A7%E4%B9%8B%E7%8E%8B' },
+    ]
+  },
+  {
+    id: 'p58', name: '张骞月', type: 'pro', title: '脱口秀演员 / 喜剧之王S2选手',
+    shows: ['喜剧之王单口季S2'],
+    douyin: 'https://www.douyin.com/search/%E5%BC%A0%E9%AA%9E%E6%9C%88+%E8%84%B1%E5%8F%A3%E7%A7%80',
+    bits: [
+      { title: '喜剧之王S2', desc: '喜剧之王第二季选手，以独特风格在竞争激烈的赛场中脱颖而出。', link: 'https://www.douyin.com/search/%E5%BC%A0%E9%AA%9E%E6%9C%88+%E5%96%9C%E5%89%A7%E4%B9%8B%E7%8E%8B' },
+    ]
+  },
+  {
+    id: 'p59', name: '王铮亮', type: 'guest', title: '歌手 / 吐槽大会S3嘉宾',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/fab7d8745d3b58e7b5f5173a8ab2ed0a.jpg',
+    shows: ['吐槽大会S3'],
+    douyin: 'https://www.douyin.com/search/%E7%8E%8B%E9%93%AE%E4%BA%AE+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S3', desc: '第三季以音乐人视角切入，以自嘲方式吐槽自己的音乐生涯。', link: 'https://www.douyin.com/search/%E7%8E%8B%E9%93%AE%E4%BA%AE+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'p60', name: '周云鹏', type: 'guest', title: '喜剧演员 / 吐槽大会S4嘉宾',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/a942db0e6020a6312ed50eef4110644e.jpg',
+    shows: ['吐槽大会S4'],
+    douyin: 'https://www.douyin.com/search/%E5%91%A8%E4%BA%91%E9%B9%8F+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S4', desc: '第四季以喜剧演员视角切入，以自嘲方式吐槽自己的演艺生涯。', link: 'https://www.douyin.com/search/%E5%91%A8%E4%BA%91%E9%B9%8F+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  // ===== 嘉宾 =====
+  {
+    id: 'g1', name: '薛之谦', type: 'guest', title: '歌手 / 吐槽大会常客',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p1465788087.82.webp',
+    shows: ['吐槽大会S1','吐槽大会S2'],
+    douyin: 'https://www.douyin.com/search/%E8%96%9B%E4%B9%8B%E8%B0%A6+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '被吐槽名场面', desc: '吐槽大会S1被李诞等人轮番吐槽，反应自然，成为节目经典片段。', link: 'https://www.douyin.com/search/%E8%96%9B%E4%B9%8B%E8%B0%A6+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g2', name: '大张伟', type: 'guest', title: '音乐人 / 综艺常客',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/df777a0654ea8e0e0438bc5b430e7ff1.jpg',
+    shows: ['吐槽大会S1','吐槽大会S2','吐槽大会S3'],
+    douyin: 'https://www.douyin.com/search/%E5%A4%A7%E5%BC%A0%E4%BC%9F+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会金句', desc: '「我就是个人形BGM」，大张伟在吐槽大会的表现令人印象深刻。', link: 'https://www.douyin.com/search/%E5%A4%A7%E5%BC%A0%E4%BC%9F+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g3', name: '张雨绮', type: 'guest', title: '演员 / 吐槽大会S3',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p1455763197.88.webp',
+    shows: ['吐槽大会S3'],
+    douyin: 'https://www.douyin.com/search/%E5%BC%A0%E9%9B%A8%E7%BB%AE+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S3', desc: '第三季以霸气姿态亮相，金句频出，「我就是豪横」成为网络热词。', link: 'https://www.douyin.com/search/%E5%BC%A0%E9%9B%A8%E7%BB%AE+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g4', name: '吴昕', type: 'guest', title: '主持人 / 吐槽大会S3',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p1488047990.92.webp',
+    shows: ['吐槽大会S3'],
+    douyin: 'https://www.douyin.com/search/%E5%90%B4%E6%98%95+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S3', desc: '第三季以自嘲方式吐槽自己的主持生涯，引发观众共鸣。', link: 'https://www.douyin.com/search/%E5%90%B4%E6%98%95+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g5', name: '王思聪', type: 'guest', title: '商人 / 吐槽大会S2',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p9OlD6pBuFMscel_avatar_uploaded1455485289.46.webp',
+    shows: ['吐槽大会S2'],
+    douyin: 'https://www.douyin.com/search/%E7%8E%8B%E6%80%9D%E8%81%AA+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S2', desc: '第二季最具话题性的嘉宾，被吐槽和吐槽他人均引发广泛讨论。', link: 'https://www.douyin.com/search/%E7%8E%8B%E6%80%9D%E8%81%AA+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g6', name: '罗永浩', type: 'guest', title: '企业家 / 吐槽大会',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/efa746c4d846994931ddb919c35774c2.jpg',
+    shows: ['吐槽大会S3'],
+    douyin: 'https://www.douyin.com/search/%E7%BD%97%E6%B0%B8%E6%B5%A9+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S3', desc: '以自嘲方式谈论锤子手机和创业失败，展现了极强的自我解构能力。', link: 'https://www.douyin.com/search/%E7%BD%97%E6%B0%B8%E6%B5%A9+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g7', name: '郭麒麟', type: 'guest', title: '演员 / 吐槽大会',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/ba689a3a7e78546e1a81a0e01ff8d933.jpg',
+    shows: ['吐槽大会S4','吐槽大会S5'],
+    douyin: 'https://www.douyin.com/search/%E9%83%AD%E9%BA%92%E9%BA%9F+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会', desc: '以相声演员背景切入脱口秀，笑点密集，与专业演员配合默契。', link: 'https://www.douyin.com/search/%E9%83%AD%E9%BA%92%E9%BA%9F+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g8', name: '那英', type: 'guest', title: '歌手 / 吐槽大会',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/c0213c3c23dd69d536e6032c8c11e180.jpg',
+    shows: ['吐槽大会S4'],
+    douyin: 'https://www.douyin.com/search/%E9%82%A3%E8%8B%B1+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S4', desc: '第四季以大姐大姿态亮相，金句频出，「那英式幽默」令人印象深刻。', link: 'https://www.douyin.com/search/%E9%82%A3%E8%8B%B1+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g9', name: '黄渤', type: 'guest', title: '演员 / 吐槽大会S1',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p1656.webp',
+    shows: ['吐槽大会S1'],
+    douyin: 'https://www.douyin.com/search/%E9%BB%84%E6%B8%A4+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S1', desc: '第一季以影帝身份亮相，以自嘲方式吐槽自己的演艺生涯，令人印象深刻。', link: 'https://www.douyin.com/search/%E9%BB%84%E6%B8%A4+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g10', name: '范志毅', type: 'guest', title: '足球运动员 / 吐槽大会S2',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/61ce8fbf3920a6e30923c4b9b6e3bc15.jpg',
+    shows: ['吐槽大会S2'],
+    douyin: 'https://www.douyin.com/search/%E8%8C%83%E5%BF%97%E6%AF%85+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S2', desc: '第二季以足球运动员身份亮相，以自嘲方式吐槽中国足球，引发广泛讨论。', link: 'https://www.douyin.com/search/%E8%8C%83%E5%BF%97%E6%AF%85+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g11', name: '汪涵', type: 'guest', title: '主持人 / 吐槽大会S1',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p24343.webp',
+    shows: ['吐槽大会S1'],
+    douyin: 'https://www.douyin.com/search/%E6%B1%AA%E6%B6%B5+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S1', desc: '第一季以主持人身份亮相，以自嘲方式吐槽自己的主持生涯，令人印象深刻。', link: 'https://www.douyin.com/search/%E6%B1%AA%E6%B6%B5+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g12', name: '陈赫', type: 'guest', title: '演员 / 吐槽大会S2',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p1602305130.39.webp',
+    shows: ['吐槽大会S2'],
+    douyin: 'https://www.douyin.com/search/%E9%99%88%E8%B5%AB+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S2', desc: '第二季以演员身份亮相，以自嘲方式吐槽自己的演艺生涯，引发广泛讨论。', link: 'https://www.douyin.com/search/%E9%99%88%E8%B5%AB+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g13', name: '蔡明', type: 'guest', title: '演员 / 吐槽大会S3',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p15854.webp',
+    shows: ['吐槽大会S3'],
+    douyin: 'https://www.douyin.com/search/%E8%94%A1%E6%98%8E+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S3', desc: '第三季以喜剧演员身份亮相，以自嘲方式吐槽自己的演艺生涯，令人印象深刻。', link: 'https://www.douyin.com/search/%E8%94%A1%E6%98%8E+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g14', name: '宁静', type: 'guest', title: '演员 / 吐槽大会S4',
+    avatar: 'https://img9.doubanio.com/view/celebrity/m/public/p28523.webp',
+    shows: ['吐槽大会S4'],
+    douyin: 'https://www.douyin.com/search/%E5%AE%81%E9%9D%99+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S4', desc: '第四季以大姐大姿态亮相，金句频出，「宁静式幽默」令人印象深刻。', link: 'https://www.douyin.com/search/%E5%AE%81%E9%9D%99+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+  {
+    id: 'g15', name: '张若昀', type: 'guest', title: '演员 / 吐槽大会S5',
+    avatar: 'https://img9.doubanio.com/view/personage/m/public/8a5049855bbb9c6d14814625009c543c.jpg',
+    shows: ['吐槽大会S5'],
+    douyin: 'https://www.douyin.com/search/%E5%BC%A0%E8%8B%A5%E6%98%80+%E5%90%90%E6%A7%BD%E5%A4%A7%E4%BC%9A',
+    bits: [
+      { title: '吐槽大会S5', desc: '第五季以演员身份亮相，以自嘲方式吐槽自己的演艺生涯，引发广泛讨论。', link: 'https://www.douyin.com/search/%E5%BC%A0%E8%8B%A5%E6%98%80+%E5%90%90%E6%A7%BD' },
+    ]
+  },
+];
+
+
+// 从演员数据中提取所有段子
+const ALL_BITS = [];
+PERFORMERS.forEach(p => {
+  if (p.bits) {
+    p.bits.forEach(b => {
+      ALL_BITS.push({ ...b, performer: p.name, performerId: p.id, shows: p.shows });
+    });
+  }
+});
+
+// ============================================================
+// 渲染函数
+// ============================================================
+
+function posterHTML(show, cls='show-poster') {
+  if (show.poster) {
+    return `<div class="${cls}"><img src="${show.poster}" alt="${show.name}" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='<div style=\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;background:${show.posterBg}\\'>🎤</div>'" loading="lazy"></div>`;
+  }
+  return `<div class="${cls}-placeholder" style="background:${show.posterBg}">${show.posterEmoji||'🎤'}</div>`;
+}
+
+function renderShows(filter='all') {
+  const grid = document.getElementById('shows-grid');
+  const filtered = filter === 'all' ? SHOWS : SHOWS.filter(s => s.series.includes(filter));
+  grid.innerHTML = filtered.map(show => `
+    <div class="show-card">
+      ${posterHTML(show)}
+      <div class="show-info">
+        <div class="show-name">${show.name}</div>
+        <div class="show-meta">${show.platform} · ${show.episodes ? show.episodes+'集' : '待播'}</div>
+        <div class="show-tags">
+          <span class="tag tag-year">${show.year}</span>
+          ${show.score ? `<span class="tag tag-score">⭐${show.score}</span>` : '<span class="tag tag-score">待评分</span>'}
+          <span class="tag tag-platform">${show.platform}</span>
+        </div>
+      </div>
+      <div class="show-links">
+        <a class="show-link link-douban" href="${show.douban}" target="_blank">豆瓣</a>
+        ${show.tencent ? `<a class="show-link link-tencent" href="${show.tencent}" target="_blank">腾讯视频</a>` : ''}
+        ${show.iqiyi ? `<a class="show-link link-iqiyi" href="${show.iqiyi}" target="_blank">爱奇艺</a>` : ''}
+        ${show.bilibili ? `<a class="show-link link-bilibili" href="${show.bilibili}" target="_blank">B站</a>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTimeline(filter='all') {
+  const container = document.getElementById('timeline-container');
+  const filtered = filter === 'all' ? SHOWS : SHOWS.filter(s => s.series.includes(filter));
+  const byYear = {};
+  filtered.forEach(s => { if (!byYear[s.year]) byYear[s.year] = []; byYear[s.year].push(s); });
+  const years = Object.keys(byYear).sort((a,b) => b-a);
+  container.innerHTML = years.map(year => `
+    <div class="timeline-year">${year}</div>
+    ${byYear[year].map(show => `
+      <div class="timeline-item">
+        <div class="timeline-card">
+          ${show.poster
+            ? `<img class="timeline-poster" src="${show.poster}" alt="${show.name}" referrerpolicy="no-referrer" onerror="this.style.display='none'" loading="lazy">`
+            : `<div class="timeline-poster-placeholder" style="background:${show.posterBg}">${show.posterEmoji||'🎤'}</div>`
+          }
+          <div class="timeline-body">
+            <div class="timeline-title">${show.name}</div>
+            <div class="timeline-desc">${show.desc}</div>
+            <div class="timeline-links">
+              <a class="show-link link-douban" href="${show.douban}" target="_blank">豆瓣</a>
+              ${show.tencent ? `<a class="show-link link-tencent" href="${show.tencent}" target="_blank">腾讯视频</a>` : ''}
+              ${show.iqiyi ? `<a class="show-link link-iqiyi" href="${show.iqiyi}" target="_blank">爱奇艺</a>` : ''}
+              ${show.bilibili ? `<a class="show-link link-bilibili" href="${show.bilibili}" target="_blank">B站搜索</a>` : ''}
+              ${show.score ? `<span class="tag tag-score">⭐${show.score}</span>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('')}
+  `).join('');
+}
+
+function renderPerformers(filter='all', search='') {
+  const container = document.getElementById('performers-container');
+  let filtered = PERFORMERS;
+  if (filter === 'pro') filtered = filtered.filter(p => p.type === 'pro');
+  if (filter === 'guest') filtered = filtered.filter(p => p.type === 'guest');
+  if (search) filtered = filtered.filter(p => p.name.includes(search) || p.title.includes(search));
+
+  const pros = filtered.filter(p => p.type === 'pro');
+  const guests = filtered.filter(p => p.type === 'guest');
+
+  let html = '';
+  if (pros.length > 0) {
+    html += `<div class="performers-section">
+      <div class="performers-label">🎤 专业演员（${pros.length}人）</div>
+      <div class="performers-grid">${pros.map(p => performerCardHTML(p)).join('')}</div>
+    </div>`;
+  }
+  if (guests.length > 0) {
+    html += `<div class="performers-section">
+      <div class="performers-label">⭐ 嘉宾（${guests.length}人）</div>
+      <div class="performers-grid">${guests.map(p => performerCardHTML(p)).join('')}</div>
+    </div>`;
+  }
+  container.innerHTML = html || '<div style="text-align:center;color:var(--text3);padding:40px">未找到相关演员</div>';
+}
+
+function avatarHTML(p, cls='performer-avatar', size=56) {
+  const color = getColor(p.name);
+  if (p.avatar) {
+    return `<div class="${cls}" style="background:${color};padding:0;overflow:hidden"><img src="${p.avatar}" alt="${p.name}" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.innerHTML='<span style=\\'font-size:${Math.round(size*0.4)}px\\'>${getInitial(p.name)}</span>';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center'" loading="lazy"></div>`;
+  }
+  return `<div class="${cls}" style="background:${color}">${getInitial(p.name)}</div>`;
+}
+
+function performerCardHTML(p) {
+  return `<div class="performer-card" onclick="openPerformer('${p.id}')">
+    ${avatarHTML(p, 'performer-avatar', 56)}
+    <div class="performer-name">${p.name}</div>
+    <div class="performer-title">${p.title}</div>
+    <div class="performer-shows">${p.shows.length}个节目</div>
+  </div>`;
+}
+
+function openPerformer(id) {
+  const p = PERFORMERS.find(x => x.id === id);
+  if (!p) return;
+  const color = getColor(p.name);
+  const modal = document.getElementById('modal-content');
+  modal.innerHTML = `
+    <div class="modal-header">
+      ${avatarHTML(p, 'modal-avatar', 64)}
+      <div>
+        <div class="modal-name">${p.name}</div>
+        <div class="modal-meta">${p.title}</div>
+        <div class="modal-meta" style="margin-top:4px">${p.type === 'pro' ? '🎤 专业演员' : '⭐ 嘉宾'}</div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('performer-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section-title">参与节目</div>
+      <div class="shows-list">${p.shows.map(s => `<span class="show-badge">${s}</span>`).join('')}</div>
+      ${p.bits && p.bits.length > 0 ? `
+        <div class="modal-section-title">经典段子（${p.bits.length}个）</div>
+        <div class="bits-list">${p.bits.map(b => `
+          <div class="bit-item">
+            <div class="bit-title">${b.title}</div>
+            <div class="bit-desc">${b.desc}</div>
+            <div class="bit-links">
+              <a class="bit-link link-douyin" href="${b.link}" target="_blank">🎵 抖音搜索</a>
+            </div>
+          </div>
+        `).join('')}</div>
+      ` : ''}
+      <div class="modal-section-title">外部链接</div>
+      <div class="bit-links">
+        ${p.douyin ? `<a class="bit-link link-douyin" href="${p.douyin}" target="_blank">🎵 抖音</a>` : ''}
+        ${p.weibo ? `<a class="bit-link link-weibo" href="${p.weibo}" target="_blank">微博</a>` : ''}
+      </div>
+    </div>
+  `;
+  document.getElementById('performer-modal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('performer-modal')) {
+    document.getElementById('performer-modal').classList.remove('open');
+  }
+}
+
+function renderBits(filter='all', search='') {
+  const grid = document.getElementById('bits-grid');
+  let filtered = ALL_BITS;
+  if (filter !== 'all') filtered = filtered.filter(b => b.performer === filter);
+  if (search) filtered = filtered.filter(b =>
+    b.title.includes(search) || b.desc.includes(search) || b.performer.includes(search)
+  );
+  grid.innerHTML = filtered.map(b => {
+    const p = PERFORMERS.find(x => x.name === b.performer);
+    const color = p ? getColor(p.name) : '#FF6B35';
+    return `<div class="bit-card">
+      <div class="bit-card-header">
+        <div class="bit-performer-avatar" style="background:${color}">${getInitial(b.performer)}</div>
+        <div>
+          <div class="bit-performer-name">${b.performer}</div>
+          <div class="bit-show-name">${b.shows ? b.shows[0] : ''}</div>
+        </div>
+      </div>
+      <div class="bit-card-title">${b.title}</div>
+      <div class="bit-card-desc">${b.desc}</div>
+      <div class="bit-card-links">
+        <a class="bit-link link-douyin" href="${b.link}" target="_blank">🎵 抖音搜索</a>
+      </div>
+    </div>`;
+  }).join('') || '<div style="text-align:center;color:var(--text3);padding:40px">未找到相关段子</div>';
+}
+
+function buildBitsFilter() {
+  const bar = document.getElementById('bits-filter');
+  const performers = [...new Set(ALL_BITS.map(b => b.performer))];
+  bar.innerHTML = `<button class="filter-btn active" onclick="filterBits('all', this)">全部</button>` +
+    performers.map(name => `<button class="filter-btn" onclick="filterBits('${name}', this)">${name}</button>`).join('');
+}
+
+// ============================================================
+// 交互函数
+// ============================================================
+
+let currentTab = 'timeline';
+let currentShowFilter = 'all';
+let currentTimelineFilter = 'all';
+let currentPerformerFilter = 'all';
+let currentBitsFilter = 'all';
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['timeline','shows','performers','bits'][i] === tab);
+  });
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  currentTab = tab;
+}
+
+function filterShows(filter, btn) {
+  document.querySelectorAll('#tab-shows .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentShowFilter = filter;
+  renderShows(filter);
+}
+
+function filterTimeline(filter, btn) {
+  document.querySelectorAll('#timeline-filter .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentTimelineFilter = filter;
+  renderTimeline(filter);
+}
+
+function filterPerformers(filter, btn) {
+  document.querySelectorAll('#tab-performers .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentPerformerFilter = filter;
+  renderPerformers(filter, document.querySelector('#tab-performers .search-box').value);
+}
+
+function searchPerformers(val) {
+  renderPerformers(currentPerformerFilter, val);
+}
+
+function filterBits(filter, btn) {
+  document.querySelectorAll('#bits-filter .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentBitsFilter = filter;
+  renderBits(filter, document.querySelector('#tab-bits .search-box').value);
+}
+
+function searchBits(val) {
+  renderBits(currentBitsFilter, val);
+}
+
+// ============================================================
+// 初始化
+// ============================================================
+
+function updateStats() {
+  document.getElementById('stat-shows').textContent = SHOWS.length;
+  document.getElementById('stat-performers').textContent = PERFORMERS.length;
+  document.getElementById('stat-bits').textContent = ALL_BITS.length + '+';
+}
+
+(function init() {
+  renderTimeline();
+  renderShows();
+  renderPerformers();
+  buildBitsFilter();
+  renderBits();
+  updateStats();
+})();
+</script>
+</body>
+</html>
