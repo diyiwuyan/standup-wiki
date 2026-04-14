@@ -165,7 +165,7 @@
 
 <div class="header">
   <h1>🎤 中国脱口秀知识库</h1>
-  <p>吐槽大会 · 脱口秀大会 · 喜剧之王单口季 · 脱他 · 主咖和Ta的朋友们</p>
+  <p>吐槽大会 · 脱口秀大会 · 喜剧之王单口季 · 脱口秀和Ta的朋友们 · 主咖和Ta的朋友们</p>
   <div class="header-stats">
     <div class="stat-item"><div class="stat-num" id="stat-shows">15</div><div class="stat-label">节目季</div></div>
     <div class="stat-item"><div class="stat-num" id="stat-performers">45</div><div class="stat-label">演员</div></div>
@@ -191,7 +191,7 @@
       <button class="filter-btn" onclick="filterTimeline('吐槽大会', this)">吐槽大会</button>
       <button class="filter-btn" onclick="filterTimeline('脱口秀大会', this)">脱口秀大会</button>
       <button class="filter-btn" onclick="filterTimeline('喜剧之王单口季', this)">喜剧之王单口季</button>
-      <button class="filter-btn" onclick="filterTimeline('脱他', this)">脱他</button>
+      <button class="filter-btn" onclick="filterTimeline('脱口秀和Ta的朋友们', this)">脱口秀和Ta的朋友们</button>
       <button class="filter-btn" onclick="filterTimeline('主咖', this)">主咖</button>
     </div>
     <div class="timeline" id="timeline-container"></div>
@@ -205,7 +205,7 @@
       <button class="filter-btn" onclick="filterShows('吐槽大会', this)">吐槽大会</button>
       <button class="filter-btn" onclick="filterShows('脱口秀大会', this)">脱口秀大会</button>
       <button class="filter-btn" onclick="filterShows('喜剧之王单口季', this)">喜剧之王单口季</button>
-      <button class="filter-btn" onclick="filterShows('脱他', this)">脱他</button>
+      <button class="filter-btn" onclick="filterShows('脱口秀和Ta的朋友们', this)">脱口秀和Ta的朋友们</button>
       <button class="filter-btn" onclick="filterShows('主咖', this)">主咖</button>
     </div>
     <div class="shows-grid" id="shows-grid"></div>
@@ -369,24 +369,22 @@ const SHOWS = [
     iqiyi: 'https://www.iqiyi.com/search.html#query=%E5%96%9C%E5%89%A7%E4%B9%8B%E7%8E%8B%E5%8D%95%E5%8F%A3%E5%AD%A3+%E7%AC%AC%E4%BA%8C%E5%AD%A3',
     bilibili: 'https://search.bilibili.com/all?keyword=%E5%96%9C%E5%89%A7%E4%B9%8B%E7%8E%8B%E5%8D%95%E5%8F%A3%E5%AD%A3+%E7%AC%AC%E4%BA%8C%E5%AD%A3',
   },
-  // 脱他
+  // 脱口秀和Ta的朋友们
   {
-    id: 'tt1', series: '脱他', season: 1, name: '脱他 第一季', year: 2024,
+    id: 'tt1', series: '脱口秀和Ta的朋友们', season: 1, name: '脱口秀和Ta的朋友们 第一季', year: 2024,
     platform: '腾讯视频', score: 7.6, episodes: 8,
-    poster: null,
+    poster: 'posters/tt1.webp',
     posterBg: 'linear-gradient(135deg,#00897B,#004D40)',
-    posterEmoji: '🎭',
     desc: '腾讯视频出品，以"脱口秀+他者视角"为核心，形式新颖，豆瓣7.6。',
     douban: 'https://movie.douban.com/subject/36644899/',
     tencent: 'https://v.qq.com/x/search/?q=%E8%84%B1%E4%BB%96',
     bilibili: 'https://search.bilibili.com/all?keyword=%E8%84%B1%E4%BB%96+%E8%84%B1%E5%8F%A3%E7%A7%80',
   },
   {
-    id: 'tt2', series: '脱他', season: 2, name: '脱他 第二季', year: 2025,
+    id: 'tt2', series: '脱口秀和Ta的朋友们', season: 2, name: '脱口秀和Ta的朋友们 第二季', year: 2025,
     platform: '腾讯视频', score: null, episodes: null,
-    poster: null,
+    poster: 'posters/tt2.webp',
     posterBg: 'linear-gradient(135deg,#00897B,#004D40)',
-    posterEmoji: '🎭',
     desc: '腾讯视频出品，2025年播出，延续第一季风格，更多新面孔加入。',
     douban: 'https://www.douban.com/search?q=%E8%84%B1%E4%BB%96+%E7%AC%AC%E4%BA%8C%E5%AD%A3',
     tencent: 'https://v.qq.com/x/search/?q=%E8%84%B1%E4%BB%96+%E7%AC%AC%E4%BA%8C%E5%AD%A3',
@@ -714,68 +712,68 @@ const PERFORMERS = [
   },
   // ===== 新增演员 p26-p65 =====
   {
-    id: 'p26', name: '张祐维', type: 'pro', title: '脱口秀演员 / 脱他S1选手',
+    id: 'p26', name: '张祐维', type: 'pro', title: '脱口秀演员 / 脱口秀和Ta的朋友们S1选手',
     avatar: 'avatars/p26.jpg',
-    shows: ['脱他S1'],
+    shows: ['脱口秀和Ta的朋友们S1'],
     douyin: 'https://www.douyin.com/search/%E5%BC%A0%E7%A5%90%E7%BB%B4+%E8%84%B1%E5%8F%A3%E7%A7%80',
     bits: [
-      { title: '脱他S1表演', desc: '脱他第一季选手，以独特的个人风格在节目中崭露头角。', link: 'https://www.douyin.com/search/%E5%BC%A0%E7%A5%90%E7%BB%B4+%E8%84%B1%E4%BB%96' },
+      { title: '脱口秀和Ta的朋友们S1表演', desc: '脱口秀和Ta的朋友们第一季选手，以独特的个人风格在节目中崭露头角。', link: 'https://www.douyin.com/search/%E5%BC%A0%E7%A5%90%E7%BB%B4+%E8%84%B1%E4%BB%96' },
       { title: '关于生活', desc: '以细腻的生活观察切入，笑点真实接地气。', link: 'https://www.douyin.com/search/%E5%BC%A0%E7%A5%90%E7%BB%B4+%E8%84%B1%E5%8F%A3%E7%A7%80' },
     ]
   },
   {
-    id: 'p27', name: '赵晓棠', type: 'pro', title: '脱口秀演员 / 脱他S1选手',
-    shows: ['脱他S1'],
+    id: 'p27', name: '赵晓棠', type: 'pro', title: '脱口秀演员 / 脱口秀和Ta的朋友们S1选手',
+    shows: ['脱口秀和Ta的朋友们S1'],
     douyin: 'https://www.douyin.com/search/%E8%B5%B5%E6%99%93%E6%A3%A0+%E8%84%B1%E5%8F%A3%E7%A7%80',
     bits: [
-      { title: '脱他S1', desc: '脱他第一季选手，以女性视角带来新鲜笑点。', link: 'https://www.douyin.com/search/%E8%B5%B5%E6%99%93%E6%A3%A0+%E8%84%B1%E4%BB%96' },
+      { title: '脱口秀和Ta的朋友们S1', desc: '脱口秀和Ta的朋友们第一季选手，以女性视角带来新鲜笑点。', link: 'https://www.douyin.com/search/%E8%B5%B5%E6%99%93%E6%A3%A0+%E8%84%B1%E4%BB%96' },
     ]
   },
   {
-    id: 'p28', name: '唐香玉', type: 'pro', title: '脱口秀演员 / 脱他S1 · 主咖',
+    id: 'p28', name: '唐香玉', type: 'pro', title: '脱口秀演员 / 脱口秀和Ta的朋友们S1 · 主咖',
     avatar: 'avatars/p28.jpg',
-    shows: ['脱他S1','主咖和Ta的朋友们'],
+    shows: ['脱口秀和Ta的朋友们S1','主咖和Ta的朋友们'],
     douyin: 'https://www.douyin.com/search/%E5%94%90%E9%A6%99%E7%8E%89+%E8%84%B1%E5%8F%A3%E7%A7%80',
     bits: [
-      { title: '脱他S1表演', desc: '脱他第一季亮眼选手，风格独特，深受观众喜爱。', link: 'https://www.douyin.com/search/%E5%94%90%E9%A6%99%E7%8E%89+%E8%84%B1%E4%BB%96' },
+      { title: '脱口秀和Ta的朋友们S1表演', desc: '脱口秀和Ta的朋友们第一季亮眼选手，风格独特，深受观众喜爱。', link: 'https://www.douyin.com/search/%E5%94%90%E9%A6%99%E7%8E%89+%E8%84%B1%E4%BB%96' },
       { title: '主咖登场', desc: '主咖和Ta的朋友们中担任主咖，展现更成熟的舞台表现力。', link: 'https://www.douyin.com/search/%E5%94%90%E9%A6%99%E7%8E%89+%E4%B8%BB%E5%92%96' },
     ]
   },
   {
-    id: 'p29', name: '徐浩伦', type: 'pro', title: '脱口秀演员 / 脱他S1选手',
+    id: 'p29', name: '徐浩伦', type: 'pro', title: '脱口秀演员 / 脱口秀和Ta的朋友们S1选手',
     avatar: 'avatars/p29.jpg',
-    shows: ['脱他S1'],
+    shows: ['脱口秀和Ta的朋友们S1'],
     douyin: 'https://www.douyin.com/search/%E5%BE%90%E6%B5%A9%E4%BC%A6+%E8%84%B1%E5%8F%A3%E7%A7%80',
     bits: [
-      { title: '脱他S1', desc: '脱他第一季选手，以幽默的自我调侃赢得观众好感。', link: 'https://www.douyin.com/search/%E5%BE%90%E6%B5%A9%E4%BC%A6+%E8%84%B1%E4%BB%96' },
+      { title: '脱口秀和Ta的朋友们S1', desc: '脱口秀和Ta的朋友们第一季选手，以幽默的自我调侃赢得观众好感。', link: 'https://www.douyin.com/search/%E5%BE%90%E6%B5%A9%E4%BC%A6+%E8%84%B1%E4%BB%96' },
     ]
   },
   {
-    id: 'p30', name: '杨蒙恩', type: 'pro', title: '脱口秀演员 / 脱他S1 · 主咖',
+    id: 'p30', name: '杨蒙恩', type: 'pro', title: '脱口秀演员 / 脱口秀和Ta的朋友们S1 · 主咖',
     avatar: 'avatars/p30.webp',
-    shows: ['脱他S1','主咖和Ta的朋友们'],
+    shows: ['脱口秀和Ta的朋友们S1','主咖和Ta的朋友们'],
     douyin: 'https://www.douyin.com/search/%E6%9D%A8%E8%92%99%E6%81%A9+%E8%84%B1%E5%8F%A3%E7%A7%80',
     bits: [
-      { title: '脱他S1', desc: '脱他第一季选手，以温暖幽默的风格打动观众。', link: 'https://www.douyin.com/search/%E6%9D%A8%E8%92%99%E6%81%A9+%E8%84%B1%E4%BB%96' },
+      { title: '脱口秀和Ta的朋友们S1', desc: '脱口秀和Ta的朋友们第一季选手，以温暖幽默的风格打动观众。', link: 'https://www.douyin.com/search/%E6%9D%A8%E8%92%99%E6%81%A9+%E8%84%B1%E4%BB%96' },
       { title: '主咖登场', desc: '主咖和Ta的朋友们中担任主咖，展现个人魅力。', link: 'https://www.douyin.com/search/%E6%9D%A8%E8%92%99%E6%81%A9+%E4%B8%BB%E5%92%96' },
     ]
   },
   {
-    id: 'p31', name: '毛豆', type: 'pro', title: '脱口秀演员 / 脱他S1选手',
+    id: 'p31', name: '毛豆', type: 'pro', title: '脱口秀演员 / 脱口秀和Ta的朋友们S1选手',
     avatar: 'avatars/p31.jpg',
-    shows: ['脱他S1','脱他S2'],
+    shows: ['脱口秀和Ta的朋友们S1','脱口秀和Ta的朋友们S2'],
     douyin: 'https://www.douyin.com/search/%E6%AF%9B%E8%B1%86+%E8%84%B1%E5%8F%A3%E7%A7%80',
     bits: [
-      { title: '脱他S1', desc: '脱他第一季选手，以清新自然的风格赢得好评。', link: 'https://www.douyin.com/search/%E6%AF%9B%E8%B1%86+%E8%84%B1%E4%BB%96' },
-      { title: '脱他S2回归', desc: '第二季回归，风格更加成熟，笑点更加精准。', link: 'https://www.douyin.com/search/%E6%AF%9B%E8%B1%86+%E8%84%B1%E4%BB%96' },
+      { title: '脱口秀和Ta的朋友们S1', desc: '脱口秀和Ta的朋友们第一季选手，以清新自然的风格赢得好评。', link: 'https://www.douyin.com/search/%E6%AF%9B%E8%B1%86+%E8%84%B1%E4%BB%96' },
+      { title: '脱口秀和Ta的朋友们S2回归', desc: '第二季回归，风格更加成熟，笑点更加精准。', link: 'https://www.douyin.com/search/%E6%AF%9B%E8%B1%86+%E8%84%B1%E4%BB%96' },
     ]
   },
   {
-    id: 'p32', name: '赵英男', type: 'pro', title: '脱口秀演员 / 脱他S2选手',
-    shows: ['脱他S2'],
+    id: 'p32', name: '赵英男', type: 'pro', title: '脱口秀演员 / 脱口秀和Ta的朋友们S2选手',
+    shows: ['脱口秀和Ta的朋友们S2'],
     douyin: 'https://www.douyin.com/search/%E8%B5%B5%E8%8B%B1%E7%94%B7+%E8%84%B1%E5%8F%A3%E7%A7%80',
     bits: [
-      { title: '脱他S2', desc: '脱他第二季选手，以独特视角和犀利笑点赢得观众认可。', link: 'https://www.douyin.com/search/%E8%B5%B5%E8%8B%B1%E7%94%B7+%E8%84%B1%E4%BB%96' },
+      { title: '脱口秀和Ta的朋友们S2', desc: '脱口秀和Ta的朋友们第二季选手，以独特视角和犀利笑点赢得观众认可。', link: 'https://www.douyin.com/search/%E8%B5%B5%E8%8B%B1%E7%94%B7+%E8%84%B1%E4%BB%96' },
     ]
   },
   {
